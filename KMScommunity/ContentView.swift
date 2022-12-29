@@ -8,15 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var userId: String = ""
+    @State private var password: String = ""
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            TextField("UserID", text: $userId)
+                .border(.secondary)
+            Button("중복 확인", action: idCheck)
+            SecureField("Password", text: $password)
+                .border(.secondary)
         }
         .padding()
     }
+    
+    func idCheck() -> Void {
+        print(userId)
+        requestGetWithQuery(url: "/user/idValidChk", inputID: userId) { (isCompletion: Bool, data: Any) in
+            
+        }
+    }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
