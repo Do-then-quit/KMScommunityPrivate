@@ -14,7 +14,7 @@ import SwiftUI
 //  "userId": "string",
 //  "userPw": "string"
 //}
-struct ContentView: View {
+struct RegisterView: View {
     @State private var userId: String = ""
     @State private var userPw: String = ""
     @State private var email: String = ""
@@ -22,11 +22,22 @@ struct ContentView: View {
     @State private var nickname: String = ""
     @State private var phone: String = ""
     
+    @State private var isShowAlert = false
+    @State private var isIdDoubleChecked = false
+    
     var body: some View {
         VStack {
             TextField("UserID", text: $userId)
                 .border(.secondary)
             Button("중복 확인", action: idCheck)
+                .alert(isPresented: $isShowAlert) {
+                    if isIdDoubleChecked {
+                        return Alert(title: Text("Id Okay"))
+                    } else {
+                        return Alert(title: Text("Id Doubled"))
+                    }
+                }
+            
             SecureField("Password", text: $userPw)
                 .border(.secondary)
             TextField("Email", text: $email)
@@ -44,9 +55,16 @@ struct ContentView: View {
     
     func idCheck() -> Void {
         print(userId)
-        requestGetWithQuery(url: "/user/idValidChk", inputID: userId) { (isCompletion: Bool, data: Any) in
-            
+        
+        requestGetWithQuery(url: "/user/idValidChk", inputID: userId) { (isCompletion: Bool, data: Data) in
+            if (isCompletion) {
+                //success
+                isIdDoubleChecked = true
+            } else {
+                isIdDoubleChecked = false
+            }
         }
+        isShowAlert.toggle()
     }
     func userRegister() -> Void {
         postUserRegister(userId: userId, userPw: userPw, email: email, name: name, phone: phone, nickname: nickname)
@@ -54,8 +72,8 @@ struct ContentView: View {
 
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        RegisterView()
     }
 }

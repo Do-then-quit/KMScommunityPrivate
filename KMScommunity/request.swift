@@ -17,7 +17,7 @@ struct Response: Codable {
 
 let urlString = "http://35.89.32.201:8081"
 
-func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Any) -> Void) {
+func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Data) -> Void) {
     guard var urlComponents = URLComponents(string: urlString + url) else {
         print("Error: cannot create URL")
         return
@@ -34,17 +34,23 @@ func requestGetWithQuery(url: String,inputID: String, completionHandler: @escapi
             return
         }
         
-        guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+        guard let data = data else {
             return
         }
         
-        print(String(decoding: data, as: UTF8.self))
-        print(response)
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+            print("Not Success")
+            completionHandler(false, data)
+            return
+        }
+        
+        completionHandler(true, data)
+
     }.resume()
 }
 
 func postUserRegister(userId: String, userPw: String, email: String, name: String, phone: String, nickname: String) {
-    guard var urlComponents = URLComponents(string: urlString + "/user/register") else {
+    guard let urlComponents = URLComponents(string: urlString + "/user/register") else {
         print("Error: cannot create URL")
         return
     }
