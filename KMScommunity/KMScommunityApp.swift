@@ -11,7 +11,9 @@ import SwiftUI
 struct KMScommunityApp: App {
     var body: some Scene {
         WindowGroup {
-            RegisterView()
+            NavigationView {
+                LoginView()
+            }
         }
     }
 }
