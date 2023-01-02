@@ -16,6 +16,7 @@
 		11873C752962BA1400AF96F3 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C742962BA1400AF96F3 /* MainView.swift */; };
 		11873C782962BB3100AF96F3 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C772962BB3100AF96F3 /* BoardView.swift */; };
 		11873C7A2962C84200AF96F3 /* BoardCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C792962C84200AF96F3 /* BoardCardView.swift */; };
+		11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C7B2962E6DA00AF96F3 /* BoardDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		11873C742962BA1400AF96F3 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		11873C772962BB3100AF96F3 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		11873C792962C84200AF96F3 /* BoardCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCardView.swift; sourceTree = "<group>"; };
+		11873C7B2962E6DA00AF96F3 /* BoardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 				11873C742962BA1400AF96F3 /* MainView.swift */,
 				11873C772962BB3100AF96F3 /* BoardView.swift */,
 				11873C792962C84200AF96F3 /* BoardCardView.swift */,
+				11873C7B2962E6DA00AF96F3 /* BoardDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -166,6 +169,7 @@
 				11873C71296199B900AF96F3 /* LoginView.swift in Sources */,
 				11873C782962BB3100AF96F3 /* BoardView.swift in Sources */,
 				11873C752962BA1400AF96F3 /* MainView.swift in Sources */,
+				11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */,
 				11873C59295DEF1F00AF96F3 /* KMScommunityApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

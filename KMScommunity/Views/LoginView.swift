@@ -10,7 +10,10 @@ import SwiftUI
 struct LoginView: View {
     @State private var userId = ""
     @State private var password = ""
-    @State private var naviSelection: String? = nil
+    
+    @State private var isLoginValid: Bool = false
+    @State private var shouldShowLoginAlert: Bool = false
+    
 
     var body: some View {
         VStack {
@@ -19,9 +22,21 @@ struct LoginView: View {
             SecureField("Password", text: $password)
                 .border(.secondary)
             HStack {
-                NavigationLink(destination: MainView()) {
-                    Text("Login")
+                NavigationLink(destination: BoardView(), isActive: $isLoginValid) {
+                    Text("NaviLogin")
+                        .onTapGesture {
+                            if postUserLogin(loginId: userId, loginPw: password) {
+                                print("Login Success in View")
+                                isLoginValid = true
+                            } else {
+                                print("Login Fail in View")
+                                isLoginValid = false
+                            }
+                        }
+                        
+                    
                 }
+
                 NavigationLink(destination: RegisterView()) {
                     Text("Register")
                 }

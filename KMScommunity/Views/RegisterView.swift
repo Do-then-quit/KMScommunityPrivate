@@ -37,7 +37,6 @@ struct RegisterView: View {
                         return Alert(title: Text("Id Doubled"))
                     }
                 }
-                .disabled(true) // for now, disabled, until server ready
             
             SecureField("Password", text: $userPw)
                 .border(.secondary)
@@ -50,7 +49,6 @@ struct RegisterView: View {
             TextField("nickname", text: $nickname)
                 .border(.secondary)
             Button("회원가입", action: userRegister)
-                .disabled(true) // for now disabled, until server ready
         }
         .padding()
     }

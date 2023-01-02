@@ -15,7 +15,7 @@ struct Response: Codable {
 
 
 
-let urlString = "http://35.89.32.201:8081"
+let urlString = "http://35.89.32.201:8080"
 
 func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Data) -> Void) {
     guard var urlComponents = URLComponents(string: urlString + url) else {
@@ -23,7 +23,7 @@ func requestGetWithQuery(url: String,inputID: String, completionHandler: @escapi
         return
     }
     
-    let queryItem = URLQueryItem(name: "userId", value: inputID)
+    let queryItem = URLQueryItem(name: "loginId", value: inputID)
     urlComponents.queryItems = [queryItem]
     guard let requestURL = urlComponents.url else {return}
     print(requestURL)
@@ -50,19 +50,20 @@ func requestGetWithQuery(url: String,inputID: String, completionHandler: @escapi
 }
 
 func postUserRegister(userId: String, userPw: String, email: String, name: String, phone: String, nickname: String) {
-    guard let urlComponents = URLComponents(string: urlString + "/user/register") else {
+    guard let urlComponents = URLComponents(string: urlString + "/member/register") else {
         print("Error: cannot create URL")
         return
     }
     
     let dicData = [
-        "userId": userId,
-        "userPw": userPw,
+        "loginId": userId,
+        "loginPw": userPw,
         "email": email,
         "name": name,
         "phone": phone,
         "nickname": nickname
     ] as Dictionary<String, String>?
+    
     let jsonData = try! JSONSerialization.data(withJSONObject: dicData!, options: [])
     let testjson = String(data: jsonData, encoding: .utf8) ?? ""
     print(testjson)
@@ -88,15 +89,61 @@ func postUserRegister(userId: String, userPw: String, email: String, name: Strin
         print(String(decoding: data, as: UTF8.self))
         print(response)
     }.resume()
-    
-    
-
 }
-//{
-//  "email": "string",
-//  "name": "string",
-//  "nickname": "string",
-//  "phone": "string",
-//  "userId": "string",
-//  "userPw": "string"
-//}
+
+struct LoginResponse: Codable {
+    var memberId: Int64
+    var nickname: String
+    var status: String
+}
+
+func postUserLogin(loginId : String, loginPw : String) -> Bool {
+    guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
+        print("Error: cannot create URL")
+        return false
+    }
+    
+    let dicData = [
+        "loginId": loginId,
+        "loginPw": loginPw,
+    ] as Dictionary<String, String>?
+    
+    let jsonData = try! JSONSerialization.data(withJSONObject: dicData!, options: [])
+    let testjson = String(data: jsonData, encoding: .utf8) ?? ""
+    print(testjson)
+    
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonData
+    
+    let session = URLSession(configuration: .default)
+    
+    var isSessionSuccess = false
+    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
+        guard error == nil else {
+            print("Error occur: error calling POST - \(String(describing: error))")
+            return
+        }
+
+        guard let data = data, let response = response as? HTTPURLResponse, (200..<300) ~= response.statusCode else {
+            print("Error: HTTP request failed")
+            return
+        }
+        
+        print(data)
+        let decoder = JSONDecoder()
+        do {
+            let decodedData = try decoder.decode(LoginResponse.self, from: data)
+            print(decodedData)
+        } catch {
+            print(error)
+        }
+        
+        print(response)
+        isSessionSuccess = true
+        
+    }.resume()
+    
+    return isSessionSuccess
+}
