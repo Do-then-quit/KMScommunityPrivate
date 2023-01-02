@@ -19,8 +19,8 @@ struct LoginView: View {
             SecureField("Password", text: $password)
                 .border(.secondary)
             HStack {
-                Button("Login") {
-                    
+                NavigationLink(destination: MainView()) {
+                    Text("Login")
                 }
                 NavigationLink(destination: RegisterView()) {
                     Text("Register")
