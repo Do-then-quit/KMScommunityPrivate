@@ -97,10 +97,10 @@ struct LoginResponse: Codable {
     var status: String
 }
 
-func postUserLogin(loginId : String, loginPw : String) -> Bool {
+func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
         print("Error: cannot create URL")
-        return false
+        return LoginResponse(memberId: -1, nickname: "", status: "Fail")
     }
     
     let dicData = [
@@ -119,31 +119,46 @@ func postUserLogin(loginId : String, loginPw : String) -> Bool {
     
     let session = URLSession(configuration: .default)
     
-    var isSessionSuccess = false
-    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard error == nil else {
-            print("Error occur: error calling POST - \(String(describing: error))")
-            return
-        }
-
-        guard let data = data, let response = response as? HTTPURLResponse, (200..<300) ~= response.statusCode else {
-            print("Error: HTTP request failed")
-            return
-        }
-        
-        print(data)
-        let decoder = JSONDecoder()
-        do {
-            let decodedData = try decoder.decode(LoginResponse.self, from: data)
-            print(decodedData)
-        } catch {
-            print(error)
-        }
-        
-        print(response)
-        isSessionSuccess = true
-        
-    }.resume()
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지. 
+    guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+        print("error")
+        // 원래는 throw로 해야될듯.
+        return LoginResponse(memberId: -1, nickname: "", status: "Fail")
+    }
     
-    return isSessionSuccess
+    let decoder = JSONDecoder()
+    do {
+        let decodedData = try decoder.decode(LoginResponse.self, from: data)
+        return decodedData
+    } catch {
+        print(error)
+        return LoginResponse(memberId: -1, nickname: "", status: "Fail")
+    }
 }
+//    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
+//        guard error == nil else {
+//            print("Error occur: error calling POST - \(String(describing: error))")
+//            return
+//        }
+//
+//        guard let data = data, let response = response as? HTTPURLResponse, (200..<300) ~= response.statusCode else {
+//            print("Error: HTTP request failed")
+//            return
+//        }
+//
+//        print(data)
+//        let decoder = JSONDecoder()
+//        do {
+//            let decodedData = try decoder.decode(LoginResponse.self, from: data)
+//            print(decodedData)
+//        } catch {
+//            print(error)
+//        }
+//
+//        print(response)
+//        isSessionSuccess = true
+//
+//    }.resume()
+    
+    
+

@@ -13,7 +13,8 @@ struct LoginView: View {
     
     @State private var isLoginValid: Bool = false
     @State private var shouldShowLoginAlert: Bool = false
-    
+    @State var memberId : Int64 = -1
+    @State var nickname : String = ""
 
     var body: some View {
         VStack {
@@ -22,15 +23,22 @@ struct LoginView: View {
             SecureField("Password", text: $password)
                 .border(.secondary)
             HStack {
-                NavigationLink(destination: BoardView(), isActive: $isLoginValid) {
+                
+                NavigationLink(destination: MainView(memberId: memberId, nickname: nickname), isActive: $isLoginValid) {
                     Text("NaviLogin")
                         .onTapGesture {
-                            if postUserLogin(loginId: userId, loginPw: password) {
-                                print("Login Success in View")
-                                isLoginValid = true
-                            } else {
-                                print("Login Fail in View")
-                                isLoginValid = false
+                            Task {
+                                let loginResponse = await postUserLogin(loginId:userId,loginPw:password)
+                                if loginResponse.status == "success" {
+                                    print("Login in view")
+                                    memberId = loginResponse.memberId
+                                    nickname = loginResponse.nickname
+                                    isLoginValid = true
+                                } else {
+                                    print("Not logined in view")
+                                    isLoginValid = false
+                                }
+                                
                             }
                         }
                         
@@ -45,6 +53,11 @@ struct LoginView: View {
 
         }
         .padding()
+    }
+    
+    func changeParameters(loginResponse: LoginResponse) -> Void {
+        memberId = loginResponse.memberId
+        nickname = loginResponse.nickname
     }
 }
 

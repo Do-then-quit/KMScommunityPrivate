@@ -16,7 +16,7 @@ struct BoardView: View {
     }
     @State private var selectionOption = SearchOptions.제목
     
-    let nickname = "nickname"
+    let nickname : String
     
     var body: some View {
         ZStack {
@@ -75,7 +75,7 @@ struct BoardView: View {
 struct BoardView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            BoardView()
+            BoardView(nickname: "testnick")
         }
     }
 }
