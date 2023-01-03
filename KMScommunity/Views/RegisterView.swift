@@ -49,6 +49,7 @@ struct RegisterView: View {
             TextField("nickname", text: $nickname)
                 .border(.secondary)
             Button("회원가입", action: userRegister)
+                //.disabled(!isIdDoubleChecked)
         }
         .padding()
     }
