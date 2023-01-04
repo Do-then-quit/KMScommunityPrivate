@@ -8,22 +8,24 @@
 import SwiftUI
 
 struct BoardDetailView: View {
-    @Environment(\.editMode) private var editMode
     @State private var disabledTextField = true
     
     @State private var BoardContent = "asdf"
+    
+    var boardId : Int64
+    @State var boardDetail : BoardDetail = BoardDetail()
     
     var body: some View {
         ScrollView {
             VStack {
                 HStack {
-                    Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                    Text(boardDetail.title)
                         .padding(.leading)
                     Spacer()
-                    Text("글쓴이")
+                    Text(boardDetail.nickname)
                         .padding(.trailing)
                 }
-                TextEditor(text: $BoardContent)
+                TextEditor(text: $boardDetail.contents)
                     .disabled(disabledTextField)
                     .border(.gray)
                     .frame(width: 300, height: 300)
@@ -40,14 +42,30 @@ struct BoardDetailView: View {
                         }
                     }
                 }
+                Divider()
+                ForEach(boardDetail.comments) { comment in
+                    HStack {
+                        Text(comment.contents)
+                        Spacer()
+                        Text(comment.nickname)
+                        
+                    }
+                    .padding()
+                    .border(.black)
+                    .cornerRadius(5)
+                }
             }
             .padding(.all)
         }
+        .task {
+            boardDetail = await getBoardDetail(boardId: boardId)
+        }
     }
+        
 }
 
 struct BoardDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardDetailView()
+        BoardDetailView(boardId: 14) //3 is first board
     }
 }

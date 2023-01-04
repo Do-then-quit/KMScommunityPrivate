@@ -14,6 +14,7 @@ struct MainView: View {
         UITabBar.appearance().scrollEdgeAppearance = .init()
         self.memberId = memberId
         self.nickname = nickname
+        myMemberId = memberId
     }
     
     

@@ -13,10 +13,8 @@ struct Response: Codable {
     let message: String
 }
 
-
-
-
 let urlString = "http://35.89.32.201:8080"
+public var myMemberId : Int64 = -1  // -1 for initial 
 
 func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Data) -> Void) {
     guard var urlComponents = URLComponents(string: urlString + url) else {
@@ -156,8 +154,8 @@ extension MainBoardResponse {
     
 enum getBoardError: Error {
     case urlError
-    
 }
+
 func getBoardList() async -> [MainBoardResponse] {
     guard let urlComponents = URLComponents(string: urlString + "/board/list") else {
         print("Error: cannot create URL")
@@ -175,12 +173,60 @@ func getBoardList() async -> [MainBoardResponse] {
         print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
         let boardList = try JSONDecoder().decode([MainBoardResponse].self, from: data)
-        print("tested")
         print(boardList[0])
-        print("tested2")
         return boardList
     }
     catch {
         return []
+    }
+}
+
+//comment struct need
+struct Comment : Codable, Identifiable {
+    var commentId :Int64
+    var id : Int64 {commentId}
+    var contents: String
+    var nickname: String
+    var writeTime: String
+    var memberId: Int64
+}
+//boardDetail struct need
+struct BoardDetail: Codable, Identifiable {
+    var boardId: Int64 = -1
+    var id: Int64 {boardId}
+    var title: String = "Initial"
+    var contents: String = "Initial"
+    var nickname: String = "Initial"
+    var writeTime: String = "Initial"
+    var likeCount: Int64 = -1
+    var memberId: Int64 = -1
+    var fail: Bool? = nil
+    var comments: [Comment] = []
+}
+
+func getBoardDetail(boardId: Int64) async -> BoardDetail {
+    guard var urlComponents = URLComponents(string: urlString + "/board") else {
+        print("Error: cannot create URL")
+        return BoardDetail()    // fix this line to error messsage or throw or ..
+    }
+    
+    let queryBoard = URLQueryItem(name: "boardId", value: String(boardId))
+    urlComponents.queryItems = [queryBoard]
+    
+    let requestURL = URLRequest(url: urlComponents.url!) //! is okay?
+    do {
+        let (data, response) = try! await URLSession.shared.data(for: requestURL)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            print("response error?, not 200?")
+            return BoardDetail()
+        }
+        print(httpResponse.statusCode)
+        //print(String(bytes: data, encoding: String.Encoding.utf8))
+        let boardDetail = try JSONDecoder().decode(BoardDetail.self, from: data)
+        print(boardDetail)
+        return boardDetail
+    }
+    catch {
+        return BoardDetail()
     }
 }
