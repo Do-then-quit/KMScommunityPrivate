@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct BoardView: View {
+    
     @State private var searchText: String = ""
     
     enum SearchOptions: String, CaseIterable, Identifiable {
@@ -15,7 +16,7 @@ struct BoardView: View {
         var id: Self {self}
     }
     @State private var selectionOption = SearchOptions.제목
-    
+    @State var boardList = [MainBoardResponse]()
     let nickname : String
     
     var body: some View {
@@ -41,9 +42,10 @@ struct BoardView: View {
                     
 
                 }
-                List(0 ..< 10) { item in
-                    // Replace Text to boardDetailview later
-                    BoardCardView()
+                List{
+                    ForEach(boardList) { board in
+                        Text(board.title)
+                    }
                 }
                 
             }
@@ -68,6 +70,10 @@ struct BoardView: View {
                 }
             }
             
+        }
+        .task {
+            print("boardview appeared?")
+            await boardList = getBoardList()
         }
     }
 }
