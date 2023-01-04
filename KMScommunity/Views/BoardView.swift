@@ -44,7 +44,10 @@ struct BoardView: View {
                 }
                 List{
                     ForEach(boardList) { board in
-                        Text(board.title)
+                        NavigationLink(destination: BoardDetailView()) {
+                            BoardCardView(board: board)
+                                
+                        }
                     }
                 }
                 

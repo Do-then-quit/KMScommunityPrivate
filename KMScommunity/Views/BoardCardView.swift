@@ -8,20 +8,22 @@
 import SwiftUI
 
 struct BoardCardView: View {
+    let board : MainBoardResponse
+    
     var body: some View {
         HStack {
-            Text("카테고리")
+            Text("카테")
             Divider()
             VStack {
-                Text("제목")
-                Text("글쓴이")
+                Text(board.title)
+                Text(board.writeTime)
             }
             Spacer()
             Divider()
             VStack {
-                Label("23", systemImage: "text.bubble")
-                Label("24", systemImage: "heart")
-                Label("123", systemImage: "cursorarrow")
+                Label("댓글", systemImage: "text.bubble")
+                Label("\(board.likeCount)", systemImage: "heart")
+                Label("\(board.viewCount)", systemImage: "cursorarrow")
             }
             
         }
@@ -30,7 +32,7 @@ struct BoardCardView: View {
 
 struct BoardCardView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardCardView()
+        BoardCardView(board: MainBoardResponse.sampleData[0])
             .previewLayout(.fixed(width: 400, height: 55))
     }
 }

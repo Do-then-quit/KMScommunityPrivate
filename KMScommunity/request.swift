@@ -146,6 +146,13 @@ struct MainBoardResponse: Codable, Identifiable {
     var writeTime: String
     var id: Int {Int(boardId)}
 }
+extension MainBoardResponse {
+    static let sampleData: [MainBoardResponse] = [
+        MainBoardResponse(boardId: 1, contents: "1's Content", likeCount: 1, title: "1's title", viewCount: 1, writeTime: "writeTiem"),
+        MainBoardResponse(boardId: 2, contents: "2's Content", likeCount: 2, title: "2's title", viewCount: 22, writeTime: "writeTiem"),
+        MainBoardResponse(boardId: 3, contents: "3's Content", likeCount: 3, title: "3's title", viewCount: 33, writeTime: "writeTiem"),
+    ]
+}
     
 enum getBoardError: Error {
     case urlError
