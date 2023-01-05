@@ -115,9 +115,7 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
-    
-    let session = URLSession(configuration: .default)
-    
+        
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지. 
     guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
         print("error")
@@ -202,6 +200,7 @@ struct BoardDetail: Codable, Identifiable {
     var memberId: Int64 = -1
     var fail: Bool? = nil
     var comments: [Comment] = []
+    //var category: String = "Initial"
 }
 
 func getBoardDetail(boardId: Int64) async -> BoardDetail {
@@ -229,4 +228,89 @@ func getBoardDetail(boardId: Int64) async -> BoardDetail {
     catch {
         return BoardDetail()
     }
+}
+
+struct BoardCreate : Codable {
+    var title : String
+    var contents : String
+    var category: String = "취업"
+    var memberId: Int64
+}
+
+func postBoardCreate(boardCreate: BoardCreate) async -> Void {
+    guard var urlComponents = URLComponents(string: urlString + "/board/register") else {
+        print("Error: cannot create URL")
+        return    // fix this line to error messsage or throw or ..
+    }
+    let jsonBoardCreate = try! JSONEncoder().encode(boardCreate)
+    
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonBoardCreate
+    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
+//    guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+//        print("error")
+//        // 원래는 throw로 해야될듯.
+//        return
+//    }
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+}
+
+func postCommentCreate(commentCreate: CommentCreate) async -> Void {
+    guard var urlComponents = URLComponents(string: urlString + "/comment/register") else {
+        print("Error: cannot create URL")
+        return    // fix this line to error messsage or throw or ..
+    }
+    let jsonCommentCreate = try! JSONEncoder().encode(commentCreate)
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonCommentCreate
+    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+    
+}
+
+func postBoardModify(boardModify: BoardModify) async -> Void {
+    guard var urlComponents = URLComponents(string: urlString + "/board/modify") else {
+        print("Error: cannot create URL")
+        return    // fix this line to error messsage or throw or ..
+    }
+    let jsonBoardModify = try! JSONEncoder().encode(boardModify)
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonBoardModify
+    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+}
+
+func postBoardDeletew(boardId: Int64) async -> Void {
+    guard var urlComponents = URLComponents(string: urlString + "/board/delete") else {
+        print("Error: cannot create URL")
+        return    // fix this line to error messsage or throw or ..
+    }
+    
+//    let dicData = [
+//        "boardId": boardId,
+//    ] as Dictionary<String, Int64>?
+    let formDataString = "boardId=\(boardId)"
+//    let jsonData = try! JSONSerialization.data(withJSONObject: dicData!, options: [])
+//    let testjson = String(data: jsonData, encoding: .utf8) ?? ""
+//    print(testjson)
+//
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.httpBody = formDataString.data(using: .utf8)
+    requestURL.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
 }

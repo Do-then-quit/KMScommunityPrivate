@@ -7,10 +7,26 @@
 
 import SwiftUI
 
+struct CommentCreate : Codable {
+    var contents : String
+    var boardId : Int64
+    var memberId: Int64
+}
+
+struct BoardModify: Codable {
+    var boardId : Int64
+    var title : String
+    var contents : String
+    var category : String = "취업"
+}
+
 struct BoardDetailView: View {
     @State private var disabledTextField = true
+    @State private var editButtonDisable = true
     
     @State private var BoardContent = "asdf"
+    
+    @State private var commentContent = ""
     
     var boardId : Int64
     @State var boardDetail : BoardDetail = BoardDetail()
@@ -19,7 +35,8 @@ struct BoardDetailView: View {
         ScrollView {
             VStack {
                 HStack {
-                    Text(boardDetail.title)
+                    TextEditor(text: $boardDetail.title)
+                        .disabled(disabledTextField)
                         .padding(.leading)
                     Spacer()
                     Text(boardDetail.nickname)
@@ -33,6 +50,15 @@ struct BoardDetailView: View {
                 HStack {
                     Button {
                         disabledTextField.toggle()
+                        if disabledTextField == true {
+                            // 보내주기.
+                            let curBoardModify = BoardModify(boardId: boardId, title: boardDetail.title, contents: boardDetail.contents)
+                            Task {
+                                await postBoardModify(boardModify:curBoardModify)
+                                boardDetail = await getBoardDetail(boardId: boardId)
+                            }
+                        }
+                        // edit 결과물 보내주기.
                     } label: {
                         if disabledTextField {
                             Text("Edit")
@@ -41,6 +67,18 @@ struct BoardDetailView: View {
                             Text("Done")
                         }
                     }
+                    .disabled(editButtonDisable)
+                    Button {
+                        Task {
+                            await postBoardDeletew(boardId:boardId)
+                            // navigation pop
+                        }
+                    } label: {
+                        Text("Delete")
+                    }
+                    .disabled(editButtonDisable)
+
+
                 }
                 Divider()
                 ForEach(boardDetail.comments) { comment in
@@ -54,11 +92,32 @@ struct BoardDetailView: View {
                     .border(.black)
                     .cornerRadius(5)
                 }
+                Divider()
+                HStack {
+                    TextEditor(text: $commentContent)
+                        .border(.blue)
+                    Button {
+                        // Task
+                        let curCommentCreate = CommentCreate(contents: commentContent, boardId: boardId, memberId: myMemberId)
+                        Task {
+                            await postCommentCreate(commentCreate:curCommentCreate)
+                            boardDetail = await getBoardDetail(boardId: boardId)
+                            commentContent = ""
+                        }
+                    } label: {
+                        Text("댓글 작성")
+                    }
+
+                }
+                
             }
             .padding(.all)
         }
         .task {
             boardDetail = await getBoardDetail(boardId: boardId)
+            if boardDetail.memberId == myMemberId {
+                editButtonDisable = false
+            }
         }
     }
         

@@ -56,9 +56,7 @@ struct BoardView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    Button {
-                        // Add posting button
-                    } label: {
+                    NavigationLink(destination: BoardCreateView()) {
                         Text("+")
                             .font(.system(.largeTitle))
                             .frame(width: 77, height: 70)
@@ -69,6 +67,8 @@ struct BoardView: View {
                     .cornerRadius(38.5)
                     .padding()
                     .shadow(color: Color.black.opacity(0.3), radius: 3, x: 3, y: 3)
+
+                    
 
                 }
             }
