@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MainView: View {
+    @Environment(\.dismiss) var dismiss
+
     var memberId: String
     var nickname: String
     init(memberId: String, nickname: String) {
@@ -25,10 +27,21 @@ struct MainView: View {
                 .tabItem {
                     Text("게시판")
                 }
-            Text("프로필뷰")
-                .tabItem {
-                    Text("프로필")
+            VStack {
+                Text("프로필뷰")
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Logout")
                 }
+
+                
+            
+            }
+            .tabItem {
+                Text("프로필")
+            }
+                
         }
         .navigationBarBackButtonHidden()
         
