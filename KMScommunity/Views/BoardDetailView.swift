@@ -21,28 +21,32 @@ struct BoardModify: Codable {
 }
 
 struct BoardDetailView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @State private var disabledTextField = true
     @State private var editButtonDisable = true
+
     
     @State private var BoardContent = "asdf"
     
     @State private var commentContent = ""
     
     var boardId : Int64
-    @State var boardDetail : BoardDetail = BoardDetail()
+    @State var boardDetail : BoardDetail = BoardDetail(status: "asdf", message: "asdf", code: -1)
     
     var body: some View {
         ScrollView {
             VStack {
                 HStack {
-                    TextEditor(text: $boardDetail.title)
+                    TextEditor(text: $boardDetail.data.title)
                         .disabled(disabledTextField)
                         .padding(.leading)
                     Spacer()
-                    Text(boardDetail.nickname)
+                    Text("\(boardId)")
+                    Text(boardDetail.data.nickname)
                         .padding(.trailing)
                 }
-                TextEditor(text: $boardDetail.contents)
+                TextEditor(text: $boardDetail.data.contents)
                     .disabled(disabledTextField)
                     .border(.gray)
                     .frame(width: 300, height: 300)
@@ -52,7 +56,7 @@ struct BoardDetailView: View {
                         disabledTextField.toggle()
                         if disabledTextField == true {
                             // 보내주기.
-                            let curBoardModify = BoardModify(boardId: boardId, title: boardDetail.title, contents: boardDetail.contents)
+                            let curBoardModify = BoardModify(boardId: boardId, title: boardDetail.data.title, contents: boardDetail.data.contents)
                             Task {
                                 await postBoardModify(boardModify:curBoardModify)
                                 boardDetail = await getBoardDetail(boardId: boardId)
@@ -72,6 +76,7 @@ struct BoardDetailView: View {
                         Task {
                             await postBoardDeletew(boardId:boardId)
                             // navigation pop
+                            dismiss()
                         }
                     } label: {
                         Text("Delete")
@@ -81,16 +86,10 @@ struct BoardDetailView: View {
 
                 }
                 Divider()
-                ForEach(boardDetail.comments) { comment in
-                    HStack {
-                        Text(comment.contents)
-                        Spacer()
-                        Text(comment.nickname)
+                ForEach(boardDetail.data.comments) { comment in
+                    CommentCardView(comment: comment)
                         
-                    }
-                    .padding()
-                    .border(.black)
-                    .cornerRadius(5)
+                    
                 }
                 Divider()
                 HStack {
@@ -115,7 +114,7 @@ struct BoardDetailView: View {
         }
         .task {
             boardDetail = await getBoardDetail(boardId: boardId)
-            if boardDetail.memberId == myMemberId {
+            if boardDetail.data.memberId == myMemberId {
                 editButtonDisable = false
             }
         }
@@ -125,6 +124,6 @@ struct BoardDetailView: View {
 
 struct BoardDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardDetailView(boardId: 14) //3 is first board
+        BoardDetailView(boardId: 1) //3 is first board
     }
 }

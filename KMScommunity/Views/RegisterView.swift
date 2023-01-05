@@ -15,6 +15,8 @@ import SwiftUI
 //  "userPw": "string"
 //}
 struct RegisterView: View {
+    @Environment(\.dismiss) var dismiss
+    
     @State private var userId: String = ""
     @State private var userPw: String = ""
     @State private var email: String = ""
@@ -69,6 +71,7 @@ struct RegisterView: View {
     }
     func userRegister() -> Void {
         postUserRegister(userId: userId, userPw: userPw, email: email, name: name, phone: phone, nickname: nickname)
+        dismiss()
     }
 
 }

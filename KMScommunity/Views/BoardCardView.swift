@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BoardCardView: View {
-    let board : MainBoardResponse
+    let board : MainBoardResponse.MainBoard
     
     var body: some View {
         HStack {
@@ -32,7 +32,7 @@ struct BoardCardView: View {
 
 struct BoardCardView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardCardView(board: MainBoardResponse.sampleData[0])
+        BoardCardView(board: MainBoardResponse.sampleData.data[0])
             .previewLayout(.fixed(width: 400, height: 55))
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BoardCreateView: View {
-    
+    @Environment(\.dismiss) var dismiss
     @State private var BoardContent = ""
     @State private var BoardTitle = ""
     
@@ -32,6 +32,7 @@ struct BoardCreateView: View {
                         let newBoardCreate = BoardCreate(title: BoardTitle, contents: BoardContent, memberId: myMemberId)
                         Task {
                             await postBoardCreate(boardCreate:newBoardCreate)
+                            dismiss()
                         }
                     } label: {
                         Text("Done")

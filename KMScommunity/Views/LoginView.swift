@@ -29,10 +29,10 @@ struct LoginView: View {
                         .onTapGesture {
                             Task {
                                 let loginResponse = await postUserLogin(loginId:userId,loginPw:password)
-                                if loginResponse.status == "success" {
+                                if loginResponse.code == 200 {
                                     print("Login in view")
-                                    memberId = loginResponse.memberId
-                                    nickname = loginResponse.nickname
+                                    memberId = loginResponse.data.memberId
+                                    nickname = loginResponse.data.nickname
                                     isLoginValid = true
                                 } else {
                                     print("Not logined in view")
@@ -56,8 +56,8 @@ struct LoginView: View {
     }
     
     func changeParameters(loginResponse: LoginResponse) -> Void {
-        memberId = loginResponse.memberId
-        nickname = loginResponse.nickname
+        memberId = loginResponse.data.memberId
+        nickname = loginResponse.data.nickname
     }
 }
 

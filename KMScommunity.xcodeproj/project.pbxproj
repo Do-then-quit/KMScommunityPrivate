@@ -19,6 +19,7 @@
 		11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C7B2962E6DA00AF96F3 /* BoardDetailView.swift */; };
 		11873C84296594CC00AF96F3 /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C83296594CC00AF96F3 /* BoardViewModel.swift */; };
 		11873C8629668F5600AF96F3 /* BoardCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C8529668F5600AF96F3 /* BoardCreateView.swift */; };
+		11873C882966B28700AF96F3 /* CommentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C872966B28700AF96F3 /* CommentCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		11873C7B2962E6DA00AF96F3 /* BoardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardDetailView.swift; sourceTree = "<group>"; };
 		11873C83296594CC00AF96F3 /* BoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewModel.swift; sourceTree = "<group>"; };
 		11873C8529668F5600AF96F3 /* BoardCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCreateView.swift; sourceTree = "<group>"; };
+		11873C872966B28700AF96F3 /* CommentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 				11873C792962C84200AF96F3 /* BoardCardView.swift */,
 				11873C7B2962E6DA00AF96F3 /* BoardDetailView.swift */,
 				11873C8529668F5600AF96F3 /* BoardCreateView.swift */,
+				11873C872966B28700AF96F3 /* CommentCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11873C882966B28700AF96F3 /* CommentCardView.swift in Sources */,
 				11873C69295DF8A300AF96F3 /* request.swift in Sources */,
 				11873C8629668F5600AF96F3 /* BoardCreateView.swift in Sources */,
 				11873C7A2962C84200AF96F3 /* BoardCardView.swift in Sources */,

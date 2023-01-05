@@ -48,6 +48,14 @@ func requestGetWithQuery(url: String,inputID: String, completionHandler: @escapi
     }.resume()
 }
 
+struct RegisterResponse : Codable{
+    var status : String
+    var message : String
+    var code : Int
+    var data : Int
+}
+
+// RegisterResponse(status: "OK", message: "success", code: 200, data: 9)
 func postUserRegister(userId: String, userPw: String, email: String, name: String, phone: String, nickname: String) {
     guard let urlComponents = URLComponents(string: urlString + "/member/register") else {
         print("Error: cannot create URL")
@@ -80,26 +88,34 @@ func postUserRegister(userId: String, userPw: String, email: String, name: Strin
             return
         }
 
-        guard let data = data, let response = response as? HTTPURLResponse, (200..<300) ~= response.statusCode else {
+        guard let data = data, let response = response as? HTTPURLResponse, 200 == response.statusCode else {
             print("Error: HTTP request failed")
             return
         }
-        
-        print(String(decoding: data, as: UTF8.self))
+        let decodedData = try! JSONDecoder().decode(RegisterResponse.self, from: data)
+        print(decodedData)
+
+        //print(String(decoding: data, as: UTF8.self))
         print(response)
     }.resume()
 }
 
 struct LoginResponse: Codable {
-    var memberId: Int64
-    var nickname: String
     var status: String
+    var message: String
+    var code : Int
+    var data: data
+    struct data: Codable {
+        var memberId: Int64
+        var nickname: String
+    }
+    
 }
 
 func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
         print("Error: cannot create URL")
-        return LoginResponse(memberId: -1, nickname: "", status: "Fail")
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: -1, nickname: "error"))
     }
     
     let dicData = [
@@ -120,7 +136,7 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
         print("error")
         // 원래는 throw로 해야될듯.
-        return LoginResponse(memberId: -1, nickname: "", status: "Fail")
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: -1, nickname: "error"))
     }
     
     let decoder = JSONDecoder()
@@ -129,35 +145,38 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
         return decodedData
     } catch {
         print(error)
-        return LoginResponse(memberId: -1, nickname: "", status: "Fail")
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: -1, nickname: "error"))
     }
 }
     
-struct MainBoardResponse: Codable, Identifiable {
-    var boardId : Int64
-    var contents: String
-    var likeCount: Int64
-    var title: String
-    var viewCount: Int64
-    var writeTime: String
-    var id: Int {Int(boardId)}
+struct MainBoardResponse: Codable {
+    struct MainBoard : Codable, Identifiable {
+        var boardId : Int64 = -1
+        var contents: String = "cont"
+        var likeCount: Int64 = -1
+        var title: String = "asdf"
+        var viewCount: Int64 = -1
+        var writeTime: String = "writeitme"
+        var id: Int {Int(boardId)}
+    }
+    var data: [MainBoard] = []
+    var status: String = "asdf"
+    var message: String = "message"
+    var code : Int = -1
+    
 }
 extension MainBoardResponse {
-    static let sampleData: [MainBoardResponse] = [
-        MainBoardResponse(boardId: 1, contents: "1's Content", likeCount: 1, title: "1's title", viewCount: 1, writeTime: "writeTiem"),
-        MainBoardResponse(boardId: 2, contents: "2's Content", likeCount: 2, title: "2's title", viewCount: 22, writeTime: "writeTiem"),
-        MainBoardResponse(boardId: 3, contents: "3's Content", likeCount: 3, title: "3's title", viewCount: 33, writeTime: "writeTiem"),
-    ]
+    static var sampleData : MainBoardResponse = MainBoardResponse(data: [], status: "status", message: "message", code: -1)
 }
     
 enum getBoardError: Error {
     case urlError
 }
 
-func getBoardList() async -> [MainBoardResponse] {
+func getBoardList() async -> MainBoardResponse {
     guard let urlComponents = URLComponents(string: urlString + "/board/list") else {
         print("Error: cannot create URL")
-        return []
+        return MainBoardResponse()
     }
     
     let requestURL = URLRequest(url: urlComponents.url!)
@@ -166,16 +185,16 @@ func getBoardList() async -> [MainBoardResponse] {
         let (data, response) = try! await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             print("response error?, not 200?")
-            return []
+            return MainBoardResponse()
         }
         print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
-        let boardList = try JSONDecoder().decode([MainBoardResponse].self, from: data)
-        print(boardList[0])
+        let boardList = try JSONDecoder().decode(MainBoardResponse.self, from: data)
+        //print(boardList[0])
         return boardList
     }
     catch {
-        return []
+        return MainBoardResponse()
     }
 }
 
@@ -187,26 +206,35 @@ struct Comment : Codable, Identifiable {
     var nickname: String
     var writeTime: String
     var memberId: Int64
+    
+    static let sampledata :Comment = Comment(commentId: 0, contents: "댓글데스", nickname: "닉네임", writeTime: "써진 시간", memberId: 1)
 }
 //boardDetail struct need
-struct BoardDetail: Codable, Identifiable {
-    var boardId: Int64 = -1
-    var id: Int64 {boardId}
-    var title: String = "Initial"
-    var contents: String = "Initial"
-    var nickname: String = "Initial"
-    var writeTime: String = "Initial"
-    var likeCount: Int64 = -1
-    var memberId: Int64 = -1
-    var fail: Bool? = nil
-    var comments: [Comment] = []
+struct BoardDetail: Codable {
+    struct data: Codable, Identifiable {
+        var boardId: Int64 = -1
+        var id: Int64 {boardId}
+        var title: String = "Initial"
+        var contents: String = "Initial"
+        var nickname: String = "Initial"
+        var writeTime: String = "Initial"
+        var likeCount: Int64 = -1
+        var memberId: Int64 = -1
+        var fail: Bool? = nil
+        var comments: [Comment] = []
+    }
+    var status: String
+    var message: String
+    var code : Int
+    var data : data = data()
+    
     //var category: String = "Initial"
 }
 
 func getBoardDetail(boardId: Int64) async -> BoardDetail {
     guard var urlComponents = URLComponents(string: urlString + "/board") else {
         print("Error: cannot create URL")
-        return BoardDetail()    // fix this line to error messsage or throw or ..
+        return BoardDetail(status: "error", message: "error", code: -1)   // fix this line to error messsage or throw or ..
     }
     
     let queryBoard = URLQueryItem(name: "boardId", value: String(boardId))
@@ -217,7 +245,7 @@ func getBoardDetail(boardId: Int64) async -> BoardDetail {
         let (data, response) = try! await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             print("response error?, not 200?")
-            return BoardDetail()
+            return BoardDetail(status: "error", message: "error", code: -1)
         }
         print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
@@ -226,7 +254,7 @@ func getBoardDetail(boardId: Int64) async -> BoardDetail {
         return boardDetail
     }
     catch {
-        return BoardDetail()
+        return BoardDetail(status: "error", message: "error", code: -1)
     }
 }
 
@@ -297,15 +325,7 @@ func postBoardDeletew(boardId: Int64) async -> Void {
         print("Error: cannot create URL")
         return    // fix this line to error messsage or throw or ..
     }
-    
-//    let dicData = [
-//        "boardId": boardId,
-//    ] as Dictionary<String, Int64>?
     let formDataString = "boardId=\(boardId)"
-//    let jsonData = try! JSONSerialization.data(withJSONObject: dicData!, options: [])
-//    let testjson = String(data: jsonData, encoding: .utf8) ?? ""
-//    print(testjson)
-//
     var requestURL = URLRequest(url: urlComponents.url!)
     requestURL.httpMethod = "POST"
     requestURL.httpBody = formDataString.data(using: .utf8)
@@ -313,4 +333,36 @@ func postBoardDeletew(boardId: Int64) async -> Void {
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     print(response)
     print(String(bytes: data, encoding: String.Encoding.utf8))
+}
+
+func postCommentDelete(commentId: Int64) async -> Void {
+    guard var urlComponents = URLComponents(string: urlString + "/comment/delete") else {
+        print("Error: cannot create URL")
+        return    // fix this line to error messsage or throw or ..
+    }
+    let formDataString = "commentId=\(commentId)"
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.httpBody = formDataString.data(using: .utf8)
+    requestURL.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+}
+
+func postCommentModify(commentModify: CommentModity) async -> Void {
+    guard var urlComponents = URLComponents(string: urlString + "/comment/modify") else {
+        print("Error: cannot create URL")
+        return    // fix this line to error messsage or throw or ..
+    }
+    let jsonCommentModify = try! JSONEncoder().encode(commentModify)
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonCommentModify
+    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+
 }

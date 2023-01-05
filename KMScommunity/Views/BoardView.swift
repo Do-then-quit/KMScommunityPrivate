@@ -16,7 +16,7 @@ struct BoardView: View {
         var id: Self {self}
     }
     @State private var selectionOption = SearchOptions.제목
-    @State var boardList = [MainBoardResponse]()
+    @State var boardList = MainBoardResponse()
     let nickname : String
     
     var body: some View {
@@ -43,7 +43,7 @@ struct BoardView: View {
 
                 }
                 List{
-                    ForEach(boardList) { board in
+                    ForEach(boardList.data) { board in
                         NavigationLink(destination: BoardDetailView(boardId: board.boardId)) {
                             BoardCardView(board: board)
                                 
