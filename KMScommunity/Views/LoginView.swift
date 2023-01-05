@@ -13,7 +13,7 @@ struct LoginView: View {
     
     @State private var isLoginValid: Bool = false
     @State private var shouldShowLoginAlert: Bool = false
-    @State var memberId : Int64 = -1
+    @State var memberId : String = ""
     @State var nickname : String = ""
 
     var body: some View {

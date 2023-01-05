@@ -14,7 +14,7 @@ struct Response: Codable {
 }
 
 let urlString = "http://35.89.32.201:8080"
-public var myMemberId : Int64 = -1  // -1 for initial 
+public var myMemberId : String = ""  // -1 for initial
 
 func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Data) -> Void) {
     guard var urlComponents = URLComponents(string: urlString + url) else {
@@ -52,7 +52,7 @@ struct RegisterResponse : Codable{
     var status : String
     var message : String
     var code : Int
-    var data : Int
+    var data : String
 }
 
 // RegisterResponse(status: "OK", message: "success", code: 200, data: 9)
@@ -90,6 +90,7 @@ func postUserRegister(userId: String, userPw: String, email: String, name: Strin
 
         guard let data = data, let response = response as? HTTPURLResponse, 200 == response.statusCode else {
             print("Error: HTTP request failed")
+            print(response)
             return
         }
         let decodedData = try! JSONDecoder().decode(RegisterResponse.self, from: data)
@@ -106,7 +107,7 @@ struct LoginResponse: Codable {
     var code : Int
     var data: data
     struct data: Codable {
-        var memberId: Int64
+        var memberId: String
         var nickname: String
     }
     
@@ -115,7 +116,7 @@ struct LoginResponse: Codable {
 func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
         print("Error: cannot create URL")
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: -1, nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
     }
     
     let dicData = [
@@ -135,8 +136,9 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지. 
     guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
         print("error")
+        print(response)
         // 원래는 throw로 해야될듯.
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: -1, nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
     }
     
     let decoder = JSONDecoder()
@@ -145,19 +147,19 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
         return decodedData
     } catch {
         print(error)
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: -1, nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
     }
 }
     
 struct MainBoardResponse: Codable {
     struct MainBoard : Codable, Identifiable {
-        var boardId : Int64 = -1
+        var boardId : String = ""
         var contents: String = "cont"
         var likeCount: Int64 = -1
         var title: String = "asdf"
         var viewCount: Int64 = -1
         var writeTime: String = "writeitme"
-        var id: Int {Int(boardId)}
+        var id: String {boardId}
     }
     var data: [MainBoard] = []
     var status: String = "asdf"
@@ -200,26 +202,26 @@ func getBoardList() async -> MainBoardResponse {
 
 //comment struct need
 struct Comment : Codable, Identifiable {
-    var commentId :Int64
-    var id : Int64 {commentId}
+    var commentId :String
+    var id : String {commentId}
     var contents: String
     var nickname: String
     var writeTime: String
-    var memberId: Int64
+    var memberId: String
     
-    static let sampledata :Comment = Comment(commentId: 0, contents: "댓글데스", nickname: "닉네임", writeTime: "써진 시간", memberId: 1)
+    static let sampledata :Comment = Comment(commentId: "", contents: "댓글데스", nickname: "닉네임", writeTime: "써진 시간", memberId: "")
 }
 //boardDetail struct need
 struct BoardDetail: Codable {
     struct data: Codable, Identifiable {
-        var boardId: Int64 = -1
-        var id: Int64 {boardId}
+        var boardId: String = ""
+        var id: String {boardId}
         var title: String = "Initial"
         var contents: String = "Initial"
         var nickname: String = "Initial"
         var writeTime: String = "Initial"
         var likeCount: Int64 = -1
-        var memberId: Int64 = -1
+        var memberId: String = ""
         var fail: Bool? = nil
         var comments: [Comment] = []
     }
@@ -231,7 +233,7 @@ struct BoardDetail: Codable {
     //var category: String = "Initial"
 }
 
-func getBoardDetail(boardId: Int64) async -> BoardDetail {
+func getBoardDetail(boardId: String) async -> BoardDetail {
     guard var urlComponents = URLComponents(string: urlString + "/board") else {
         print("Error: cannot create URL")
         return BoardDetail(status: "error", message: "error", code: -1)   // fix this line to error messsage or throw or ..
@@ -262,7 +264,7 @@ struct BoardCreate : Codable {
     var title : String
     var contents : String
     var category: String = "취업"
-    var memberId: Int64
+    var memberId: String
 }
 
 func postBoardCreate(boardCreate: BoardCreate) async -> Void {
@@ -320,7 +322,7 @@ func postBoardModify(boardModify: BoardModify) async -> Void {
     print(String(bytes: data, encoding: String.Encoding.utf8))
 }
 
-func postBoardDeletew(boardId: Int64) async -> Void {
+func postBoardDeletew(boardId: String) async -> Void {
     guard var urlComponents = URLComponents(string: urlString + "/board/delete") else {
         print("Error: cannot create URL")
         return    // fix this line to error messsage or throw or ..
@@ -335,7 +337,7 @@ func postBoardDeletew(boardId: Int64) async -> Void {
     print(String(bytes: data, encoding: String.Encoding.utf8))
 }
 
-func postCommentDelete(commentId: Int64) async -> Void {
+func postCommentDelete(commentId: String) async -> Void {
     guard var urlComponents = URLComponents(string: urlString + "/comment/delete") else {
         print("Error: cannot create URL")
         return    // fix this line to error messsage or throw or ..

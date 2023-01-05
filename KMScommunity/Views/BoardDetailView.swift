@@ -9,12 +9,12 @@ import SwiftUI
 
 struct CommentCreate : Codable {
     var contents : String
-    var boardId : Int64
-    var memberId: Int64
+    var boardId : String
+    var memberId: String
 }
 
 struct BoardModify: Codable {
-    var boardId : Int64
+    var boardId : String
     var title : String
     var contents : String
     var category : String = "취업"
@@ -31,7 +31,7 @@ struct BoardDetailView: View {
     
     @State private var commentContent = ""
     
-    var boardId : Int64
+    var boardId : String
     @State var boardDetail : BoardDetail = BoardDetail(status: "asdf", message: "asdf", code: -1)
     
     var body: some View {
@@ -42,7 +42,6 @@ struct BoardDetailView: View {
                         .disabled(disabledTextField)
                         .padding(.leading)
                     Spacer()
-                    Text("\(boardId)")
                     Text(boardDetail.data.nickname)
                         .padding(.trailing)
                 }
@@ -89,6 +88,7 @@ struct BoardDetailView: View {
                 ForEach(boardDetail.data.comments) { comment in
                     CommentCardView(comment: comment)
                         
+                        
                     
                 }
                 Divider()
@@ -119,11 +119,15 @@ struct BoardDetailView: View {
             }
         }
     }
+    
+    func updateDetailView() async -> Void {
+        boardDetail = await getBoardDetail(boardId: boardId)
+    }
         
 }
 
 struct BoardDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardDetailView(boardId: 1) //3 is first board
+        BoardDetailView(boardId: "") //3 is first board
     }
 }

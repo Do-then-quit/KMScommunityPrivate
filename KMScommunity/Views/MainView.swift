@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MainView: View {
-    var memberId: Int64
+    var memberId: String
     var nickname: String
-    init(memberId: Int64, nickname: String) {
+    init(memberId: String, nickname: String) {
         UITabBar.appearance().scrollEdgeAppearance = .init()
         self.memberId = memberId
         self.nickname = nickname
@@ -39,6 +39,6 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView(memberId: 1, nickname: "TestName")
+        MainView(memberId: "", nickname: "TestName")
     }
 }

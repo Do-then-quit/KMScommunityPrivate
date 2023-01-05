@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct CommentModity : Codable {
-    var commentId: Int64
+    var commentId: String
     var contents: String
 }
 
 struct CommentCardView: View {
+    @Environment(\.dismiss) var dismiss
     @State private var editButtonDisable = true
     @State private var isEditButtonClicked = false
     
@@ -35,7 +36,8 @@ struct CommentCardView: View {
                         Task {
                             await postCommentModify(commentModify:curCommentModify)
                             // how to update whole view
-                            
+                            //BoardDetailView.updateDetailView()
+                            dismiss()
                             
                         }
                     }
@@ -53,6 +55,7 @@ struct CommentCardView: View {
                     Task {
                         await postCommentDelete(commentId:comment.commentId)
                         // how to update view
+                        dismiss()
                     }
                 } label: {
                     Text("Delete")
