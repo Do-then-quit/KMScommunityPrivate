@@ -17,19 +17,21 @@ import SwiftUI
 struct RegisterView: View {
     @Environment(\.dismiss) var dismiss
     
-    @State private var userId: String = ""
-    @State private var userPw: String = ""
-    @State private var email: String = ""
-    @State private var name: String = ""
-    @State private var nickname: String = ""
-    @State private var phone: String = ""
+    @State private var user: RegistUser = RegistUser()
+    
+//    @State private var userId: String = ""
+//    @State private var userPw: String = ""
+//    @State private var email: String = ""
+//    @State private var name: String = ""
+//    @State private var nickname: String = ""
+//    @State private var phone: String = ""
     
     @State private var isShowAlert = false
     @State private var isIdDoubleChecked = false
     
     var body: some View {
         VStack {
-            TextField("UserID", text: $userId)
+            TextField("UserID", text: $user.userId)
                 .border(.secondary)
             Button("중복 확인", action: idCheck)
                 .alert(isPresented: $isShowAlert) {
@@ -40,26 +42,37 @@ struct RegisterView: View {
                     }
                 }
             
-            SecureField("Password", text: $userPw)
+            SecureField("Password", text: $user.userPw)
                 .border(.secondary)
-            TextField("Email", text: $email)
+            TextField("Email", text: $user.email)
                 .border(.secondary)
-            TextField("Name", text: $name)
+            TextField("Name", text: $user.name)
                 .border(.secondary)
-            TextField("phone", text: $phone)
+            TextField("phone", text: $user.phone)
                 .border(.secondary)
-            TextField("nickname", text: $nickname)
+            TextField("nickname", text: $user.nickname)
                 .border(.secondary)
-            Button("회원가입", action: userRegister)
+            Button("회원가입") {
+                Task {
+                    do {
+                        try await user.postUserRegist()
+                        dismiss()
+                    } catch RegistUser.UserError.internalError {
+                        print("Big Error internal Error")
+                    } catch { //rest errors
+                        //alert do this again please.
+                    }
+                }
+            }
                 //.disabled(!isIdDoubleChecked)
         }
         .padding()
     }
     
     func idCheck() -> Void {
-        print(userId)
+        print(user.userId)
         
-        requestGetWithQuery(url: "/user/idValidChk", inputID: userId) { (isCompletion: Bool, data: Data) in
+        requestGetWithQuery(url: "/user/idValidChk", inputID: user.userId) { (isCompletion: Bool, data: Data) in
             if (isCompletion) {
                 //success
                 isIdDoubleChecked = true
@@ -69,11 +82,6 @@ struct RegisterView: View {
         }
         isShowAlert.toggle()
     }
-    func userRegister() -> Void {
-        postUserRegister(userId: userId, userPw: userPw, email: email, name: name, phone: phone, nickname: nickname)
-        dismiss()
-    }
-
 }
 
 struct RegisterView_Previews: PreviewProvider {

@@ -32,6 +32,8 @@ func requestGetWithQuery(url: String,inputID: String, completionHandler: @escapi
             print("Error occur")
             return
         }
+        print(data)
+        print(response)
         
         guard let data = data else {
             return
@@ -48,58 +50,6 @@ func requestGetWithQuery(url: String,inputID: String, completionHandler: @escapi
     }.resume()
 }
 
-struct RegisterResponse : Codable{
-    var status : String
-    var message : String
-    var code : Int
-    var data : String
-}
-
-// RegisterResponse(status: "OK", message: "success", code: 200, data: 9)
-func postUserRegister(userId: String, userPw: String, email: String, name: String, phone: String, nickname: String) {
-    guard let urlComponents = URLComponents(string: urlString + "/member/register") else {
-        print("Error: cannot create URL")
-        return
-    }
-    
-    let dicData = [
-        "loginId": userId,
-        "loginPw": userPw,
-        "email": email,
-        "name": name,
-        "phone": phone,
-        "nickname": nickname
-    ] as Dictionary<String, String>?
-    
-    let jsonData = try! JSONSerialization.data(withJSONObject: dicData!, options: [])
-    let testjson = String(data: jsonData, encoding: .utf8) ?? ""
-    print(testjson)
-    
-    var requestURL = URLRequest(url: urlComponents.url!)
-    requestURL.httpMethod = "POST"
-    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    requestURL.httpBody = jsonData
-    
-    let session = URLSession(configuration: .default)
-    
-    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard error == nil else {
-            print("Error occur: error calling POST - \(String(describing: error))")
-            return
-        }
-
-        guard let data = data, let response = response as? HTTPURLResponse, 200 == response.statusCode else {
-            print("Error: HTTP request failed")
-            print(response)
-            return
-        }
-        let decodedData = try! JSONDecoder().decode(RegisterResponse.self, from: data)
-        print(decodedData)
-
-        //print(String(decoding: data, as: UTF8.self))
-        print(response)
-    }.resume()
-}
 
 struct LoginResponse: Codable {
     var status: String
