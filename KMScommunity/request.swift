@@ -13,50 +13,17 @@ struct Response: Codable {
     let message: String
 }
 
+// 필요한 전역변수 라고 치자. 
 let urlString = "http://35.89.32.201:8080"
 public var myMemberId : String = ""  // -1 for initial
-
-func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Data) -> Void) {
-    guard var urlComponents = URLComponents(string: urlString + url) else {
-        print("Error: cannot create URL")
-        return
-    }
-    
-    let queryItem = URLQueryItem(name: "loginId", value: inputID)
-    urlComponents.queryItems = [queryItem]
-    guard let requestURL = urlComponents.url else {return}
-    print(requestURL)
-    let session = URLSession(configuration: .default)
-    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard error == nil else {
-            print("Error occur")
-            return
-        }
-        print(data)
-        print(response)
-        
-        guard let data = data else {
-            return
-        }
-        
-        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-            print("Not Success")
-            completionHandler(false, data)
-            return
-        }
-        
-        completionHandler(true, data)
-
-    }.resume()
-}
 
 
 struct LoginResponse: Codable {
     var status: String
     var message: String
     var code : Int
-    var data: data
-    struct data: Codable {
+    var data: UserData
+    struct UserData: Codable {
         var memberId: String
         var nickname: String
     }
@@ -66,7 +33,7 @@ struct LoginResponse: Codable {
 func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
         print("Error: cannot create URL")
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.UserData(memberId: "", nickname: "error"))
     }
     
     let dicData = [
@@ -83,22 +50,26 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
         
-    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지. 
-    guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-        print("error")
-        print(response)
-        // 원래는 throw로 해야될듯.
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
-    }
-    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     let decoder = JSONDecoder()
     do {
         let decodedData = try decoder.decode(LoginResponse.self, from: data)
+        print(decodedData)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            print("error")
+            print(response)
+            // 원래는 throw로 해야될듯.
+            return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.UserData(memberId: "", nickname: "error"))
+        }
         return decodedData
     } catch {
         print(error)
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.UserData(memberId: "", nickname: "error"))
     }
+    
+    
+    
+    
 }
     
 struct MainBoardResponse: Codable {

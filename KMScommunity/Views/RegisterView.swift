@@ -29,18 +29,34 @@ struct RegisterView: View {
     @State private var isShowAlert = false
     @State private var isIdDoubleChecked = false
     
+    @State private var isRegistOkay = false
+    @State private var isRegistAlert = false
+    
+    
     var body: some View {
         VStack {
             TextField("UserID", text: $user.userId)
                 .border(.secondary)
-            Button("중복 확인", action: idCheck)
-                .alert(isPresented: $isShowAlert) {
-                    if isIdDoubleChecked {
-                        return Alert(title: Text("Id Okay"))
-                    } else {
-                        return Alert(title: Text("Id Doubled"))
+                .disabled(isIdDoubleChecked)
+            Button("중복 확인", action: {
+                Task {
+                    do {
+                        isIdDoubleChecked = try await user.getIdDoubleCheck()
+                    } catch {
+                        print("Not wanted Error Occur")
                     }
+                    isShowAlert.toggle()
+                    
                 }
+            })
+            .alert("id 중복 결과", isPresented: $isShowAlert, actions: {}, message: {
+                if isIdDoubleChecked {
+                    Text("Id Okay")
+                } else {
+                    Text("Id Doubled")
+                }
+            })
+            
             
             SecureField("Password", text: $user.userPw)
                 .border(.secondary)
@@ -56,31 +72,36 @@ struct RegisterView: View {
                 Task {
                     do {
                         try await user.postUserRegist()
-                        dismiss()
+                        isRegistOkay = true
                     } catch RegistUser.UserError.internalError {
                         print("Big Error internal Error")
+                        isRegistOkay = false
                     } catch { //rest errors
                         //alert do this again please.
+                        isRegistOkay = false
+                        
                     }
+                    isRegistAlert = true
                 }
             }
-                //.disabled(!isIdDoubleChecked)
+            .disabled(!isIdDoubleChecked)
+            .alert("회원가입 결과", isPresented: $isRegistAlert) {
+                Button("확인") {
+                    if isRegistOkay {
+                        dismiss()
+                    }
+                }
+            } message: {
+                if isRegistOkay {
+                    Text("회원가입 완료")
+                } else {
+                    Text("회원가입 실패")
+                }
+            }
+
+            
         }
         .padding()
-    }
-    
-    func idCheck() -> Void {
-        print(user.userId)
-        
-        requestGetWithQuery(url: "/user/idValidChk", inputID: user.userId) { (isCompletion: Bool, data: Data) in
-            if (isCompletion) {
-                //success
-                isIdDoubleChecked = true
-            } else {
-                isIdDoubleChecked = false
-            }
-        }
-        isShowAlert.toggle()
     }
 }
 

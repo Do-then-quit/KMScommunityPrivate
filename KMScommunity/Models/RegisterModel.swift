@@ -61,13 +61,10 @@ extension RegistUser {
         requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
         requestURL.httpBody = jsonData
         
-        let (data, response) : (Data, URLResponse)
-        do {
-            (data, response) = try await URLSession.shared.data(for: requestURL)
-        } catch {
-            throw UserError.networkError
-        }
         
+        
+        let (data, response) = try await URLSession.shared.data(for: requestURL)
+
         //see response if error
         guard let httpresponse = response as? HTTPURLResponse, 200 == httpresponse.statusCode else {
             print("Error: HTTP request failed")
@@ -75,15 +72,47 @@ extension RegistUser {
             throw UserError.responseError
         }
         
-        // see data what comes
-        do {
-            let decodedData = try JSONDecoder().decode(RegisterResponse.self, from: data)
-            print(decodedData)
-            if decodedData.code != 200 {
-                throw UserError.responseError
-            }
-        } catch {
+        guard let decodedData = try? JSONDecoder().decode(RegisterResponse.self, from: data) else {
             throw UserError.internalError
         }
+        
+        if decodedData.code != 200 {
+            throw UserError.responseError
+        }
+        print(decodedData)
+        print(response)
+    }
+    
+    func getIdDoubleCheck() async throws -> Bool {
+        guard var urlComponents = URLComponents(string: urlString + "/member/idValidChk") else {
+            print("Error: cannot create URL")
+            throw UserError.internalError
+            // 이 메소드를 사용하는 곳에서 try, catch 로 에러를 처리한다. 캬
+        }
+        
+        urlComponents.queryItems = [URLQueryItem(name: "loginId", value: userId)]
+        let requestURL = URLRequest(url: urlComponents.url!)
+
+        let (data, response) = try await URLSession.shared.data(for: requestURL)
+        
+        guard let httpresponse = response as? HTTPURLResponse, 200 == httpresponse.statusCode else {
+            print(response)
+            // 그냥 여기서 200 아니면 그 iddouble인 셈 치자.
+            throw UserError.responseError
+        }
+        
+        guard let getResult = String(bytes: data, encoding: String.Encoding.utf8) else {
+            print(data)
+            throw UserError.internalError
+        }
+        
+        print(response)
+        print(getResult)
+        if getResult == "fail" {
+            return false
+        }
+        return true
     }
 }
+
+
