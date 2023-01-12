@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1152EA74296D807C007EEA5F /* RegisterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1152EA73296D807C007EEA5F /* RegisterModel.swift */; };
+		1177178829703D6500253B55 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177178729703D6500253B55 /* LoginModel.swift */; };
 		11873C59295DEF1F00AF96F3 /* KMScommunityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C58295DEF1F00AF96F3 /* KMScommunityApp.swift */; };
 		11873C5B295DEF1F00AF96F3 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C5A295DEF1F00AF96F3 /* RegisterView.swift */; };
 		11873C5D295DEF2100AF96F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11873C5C295DEF2100AF96F3 /* Assets.xcassets */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		1152EA73296D807C007EEA5F /* RegisterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterModel.swift; sourceTree = "<group>"; };
+		1177178729703D6500253B55 /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		11873C55295DEF1F00AF96F3 /* KMScommunity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KMScommunity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11873C58295DEF1F00AF96F3 /* KMScommunityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KMScommunityApp.swift; sourceTree = "<group>"; };
 		11873C5A295DEF1F00AF96F3 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				1152EA73296D807C007EEA5F /* RegisterModel.swift */,
+				1177178729703D6500253B55 /* LoginModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 				11873C71296199B900AF96F3 /* LoginView.swift in Sources */,
 				11873C782962BB3100AF96F3 /* BoardView.swift in Sources */,
 				11873C84296594CC00AF96F3 /* BoardViewModel.swift in Sources */,
+				1177178829703D6500253B55 /* LoginModel.swift in Sources */,
 				1152EA74296D807C007EEA5F /* RegisterModel.swift in Sources */,
 				11873C752962BA1400AF96F3 /* MainView.swift in Sources */,
 				11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */,

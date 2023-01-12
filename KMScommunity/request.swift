@@ -15,7 +15,7 @@ struct Response: Codable {
 
 // 필요한 전역변수 라고 치자. 
 let urlString = "http://35.89.32.201:8080"
-public var myMemberId : String = ""  // -1 for initial
+
 
 
 struct LoginResponse: Codable {
@@ -145,6 +145,7 @@ struct BoardDetail: Codable {
         var memberId: String = ""
         var fail: Bool? = nil
         var comments: [Comment] = []
+        // var like: Bool = false
     }
     var status: String
     var message: String
@@ -155,6 +156,9 @@ struct BoardDetail: Codable {
 }
 
 func getBoardDetail(boardId: String) async -> BoardDetail {
+    // 수정해야할것,
+    // post  보낼때 {"boardId" : "", "memberId", ""}
+    // response origin + like: boolean
     guard var urlComponents = URLComponents(string: urlString + "/board") else {
         print("Error: cannot create URL")
         return BoardDetail(status: "error", message: "error", code: -1)   // fix this line to error messsage or throw or ..
@@ -184,11 +188,12 @@ func getBoardDetail(boardId: String) async -> BoardDetail {
 struct BoardCreate : Codable {
     var title : String
     var contents : String
-    var category: String = "취업"
+    var category: String = ""
     var memberId: String
 }
 
 func postBoardCreate(boardCreate: BoardCreate) async -> Void {
+    print("Now Board Create Func")
     guard var urlComponents = URLComponents(string: urlString + "/board/register") else {
         print("Error: cannot create URL")
         return    // fix this line to error messsage or throw or ..
@@ -208,6 +213,9 @@ func postBoardCreate(boardCreate: BoardCreate) async -> Void {
 //    }
     print(response)
     print(String(bytes: data, encoding: String.Encoding.utf8))
+    // Optional("{\"status\":\"OK\",\"message\":\"success\",\"code\":200,\"data\":\"fail\"}")
+    // seems like there is error in board create. 아마 보낼때 json양식이 문제가 있는게 아닐까.
+    print("Board Create Func Done")
 }
 
 func postCommentCreate(commentCreate: CommentCreate) async -> Void {

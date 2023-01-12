@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State private var user = LoginUser()
     @State private var userId = ""
     @State private var password = ""
     
@@ -16,48 +17,38 @@ struct LoginView: View {
     @State var memberId : String = ""
     @State var nickname : String = ""
 
+    @State private var isLoginAlertShow : Bool = false
     var body: some View {
         VStack {
-            TextField("UserID", text: $userId)
+            TextField("UserID", text: $user.userId)
                 .border(.secondary)
-            SecureField("Password", text: $password)
+            SecureField("Password", text: $user.userPw)
                 .border(.secondary)
             HStack {
-                
-                NavigationLink(destination: MainView(memberId: memberId, nickname: nickname), isActive: $isLoginValid) {
+                NavigationLink(destination: MainView(), isActive: $isLoginValid) {
                     Text("NaviLogin")
                         .onTapGesture {
                             Task {
-                                let loginResponse = await postUserLogin(loginId:userId,loginPw:password)
-                                if loginResponse.code == 200 {
-                                    print("Login in view")
-                                    memberId = loginResponse.data.memberId
-                                    nickname = loginResponse.data.nickname
+                                do {
+                                    try await user.postUserLogin()
                                     isLoginValid = true
-                                } else {
-                                    print("Not logined in view")
+                                } catch {
+                                    // error
                                     isLoginValid = false
+                                    isLoginAlertShow = true
                                 }
-                                
                             }
                         }
-                        
-                    
                 }
-
+                .alert("회원가입 실패", isPresented: $isLoginAlertShow, actions: {}) {
+                    Text("아이디와 비밀번호를 다시 확인해주세요.")
+                }
                 NavigationLink(destination: RegisterView()) {
                     Text("Register")
                 }
-
             }
-
         }
         .padding()
-    }
-    
-    func changeParameters(loginResponse: LoginResponse) -> Void {
-        memberId = loginResponse.data.memberId
-        nickname = loginResponse.data.nickname
     }
 }
 
