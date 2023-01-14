@@ -113,6 +113,38 @@ extension RegistUser {
         }
         return true
     }
+    
+    func getNicknameDoubleCheck() async throws -> Bool {
+        guard var urlComponents = URLComponents(string: urlString + "/member/nickValidChk") else {
+            print("Error: cannot create URL")
+            throw UserError.internalError
+            // 이 메소드를 사용하는 곳에서 try, catch 로 에러를 처리한다. 캬
+        }
+        
+        urlComponents.queryItems = [URLQueryItem(name: "nickname", value: nickname)]
+        let requestURL = URLRequest(url: urlComponents.url!)
+
+        let (data, response) = try await URLSession.shared.data(for: requestURL)
+        
+        guard let httpresponse = response as? HTTPURLResponse, 200 == httpresponse.statusCode else {
+            print(response)
+            // 그냥 여기서 200 아니면 그 iddouble인 셈 치자.
+            throw UserError.responseError
+        }
+        
+        guard let getResult = String(bytes: data, encoding: String.Encoding.utf8) else {
+            print(data)
+            throw UserError.internalError
+        }
+        
+        print(response)
+        print(getResult)
+        if getResult == "fail" {
+            return false
+        }
+        return true
+    }
+    
 }
 
 

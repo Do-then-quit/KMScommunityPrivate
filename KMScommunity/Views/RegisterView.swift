@@ -28,6 +28,7 @@ struct RegisterView: View {
     
     @State private var isShowAlert = false
     @State private var isIdDoubleChecked = false
+    @State private var isNickDoubleChecked = false
     
     @State private var isRegistOkay = false
     @State private var isRegistAlert = false
@@ -68,6 +69,17 @@ struct RegisterView: View {
                 .border(.secondary)
             TextField("nickname", text: $user.nickname)
                 .border(.secondary)
+            Button("닉네임중복확인") {
+                // 닉네임 중복 확인 완료 되면 회원가입 되게 하자. 
+                Task {
+                    do {
+                        isNickDoubleChecked = try await user.getIdDoubleCheck()
+                    } catch {
+                        print("Not wanted Error Occur")
+                    }
+                    
+                }
+            }
             Button("회원가입") {
                 Task {
                     do {
