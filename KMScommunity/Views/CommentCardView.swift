@@ -17,6 +17,8 @@ struct CommentCardView: View {
     @State private var editButtonDisable = true
     @State private var isEditButtonClicked = false
     
+    @Binding var isEdited : Int
+    
     @State var comment : Comment
     
     var body: some View {
@@ -37,7 +39,7 @@ struct CommentCardView: View {
                             await postCommentModify(commentModify:curCommentModify)
                             // how to update whole view
                             //BoardDetailView.updateDetailView()
-                            dismiss()
+                            isEdited += 1
                             
                         }
                     }
@@ -55,7 +57,7 @@ struct CommentCardView: View {
                     Task {
                         await postCommentDelete(commentId:comment.commentId)
                         // how to update view
-                        dismiss()
+                        isEdited += 1
                     }
                 } label: {
                     Text("Delete")
@@ -70,7 +72,7 @@ struct CommentCardView: View {
         .border(.black)
         .cornerRadius(5)
         .task {
-            if myMemberId == comment.memberId {
+            if curUser.memberId == comment.memberId {
                 editButtonDisable = false
             }
         }
@@ -79,7 +81,7 @@ struct CommentCardView: View {
 
 struct CommentCardView_Previews: PreviewProvider {
     static var previews: some View {
-        CommentCardView(comment: Comment.sampledata)
+        CommentCardView(isEdited: .constant(0), comment: Comment.sampledata)
             .previewLayout(.fixed(width: 400, height: 90))
     }
 }

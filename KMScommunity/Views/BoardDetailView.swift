@@ -25,6 +25,8 @@ struct BoardDetailView: View {
     
     @State private var disabledTextField = true
     @State private var editButtonDisable = true
+    
+    @State private var isCommentEdited = 0
 
     
     @State private var BoardContent = "asdf"
@@ -86,10 +88,7 @@ struct BoardDetailView: View {
                 }
                 Divider()
                 ForEach(boardDetail.data.comments) { comment in
-                    CommentCardView(comment: comment)
-                        
-                        
-                    
+                    CommentCardView(isEdited: $isCommentEdited, comment: comment)
                 }
                 Divider()
                 HStack {
@@ -97,7 +96,7 @@ struct BoardDetailView: View {
                         .border(.blue)
                     Button {
                         // Task
-                        let curCommentCreate = CommentCreate(contents: commentContent, boardId: boardId, memberId: myMemberId)
+                        let curCommentCreate = CommentCreate(contents: commentContent, boardId: boardId, memberId: curUser.memberId)
                         Task {
                             await postCommentCreate(commentCreate:curCommentCreate)
                             boardDetail = await getBoardDetail(boardId: boardId)
@@ -114,9 +113,12 @@ struct BoardDetailView: View {
         }
         .task {
             boardDetail = await getBoardDetail(boardId: boardId)
-            if boardDetail.data.memberId == myMemberId {
+            if boardDetail.data.memberId == curUser.memberId {
                 editButtonDisable = false
             }
+        }
+        .task(id: isCommentEdited) {
+            boardDetail = await getBoardDetail(boardId: boardId)
         }
     }
     

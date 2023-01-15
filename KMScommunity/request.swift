@@ -145,7 +145,7 @@ struct BoardDetail: Codable {
         var memberId: String = ""
         var fail: Bool? = nil
         var comments: [Comment] = []
-        // var like: Bool = false
+        var like: Bool = false
     }
     var status: String
     var message: String
@@ -159,28 +159,38 @@ func getBoardDetail(boardId: String) async -> BoardDetail {
     // 수정해야할것,
     // post  보낼때 {"boardId" : "", "memberId", ""}
     // response origin + like: boolean
+    print("BoardDetail Start")
     guard var urlComponents = URLComponents(string: urlString + "/board") else {
         print("Error: cannot create URL")
         return BoardDetail(status: "error", message: "error", code: -1)   // fix this line to error messsage or throw or ..
     }
     
-    let queryBoard = URLQueryItem(name: "boardId", value: String(boardId))
-    urlComponents.queryItems = [queryBoard]
+    let dicData = ["boardId": boardId, "memberId": curUser.memberId] as Dictionary<String, String>
+    let jsonData = try! JSONSerialization.data(withJSONObject: dicData)
     
-    let requestURL = URLRequest(url: urlComponents.url!) //! is okay?
+    
+    
+    var requestURL = URLRequest(url: urlComponents.url!) //! is okay?
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonData
     do {
         let (data, response) = try! await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             print("response error?, not 200?")
+            print(String(bytes: data, encoding: String.Encoding.utf8))
+            print(response)
             return BoardDetail(status: "error", message: "error", code: -1)
         }
         print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
         let boardDetail = try JSONDecoder().decode(BoardDetail.self, from: data)
         print(boardDetail)
+        print("BoardDetail Done")
         return boardDetail
     }
     catch {
+        print("BoardDetail Done with Error")
         return BoardDetail(status: "error", message: "error", code: -1)
     }
 }
@@ -188,7 +198,7 @@ func getBoardDetail(boardId: String) async -> BoardDetail {
 struct BoardCreate : Codable {
     var title : String
     var contents : String
-    var category: String = ""
+    var category: String = "Initial"
     var memberId: String
 }
 

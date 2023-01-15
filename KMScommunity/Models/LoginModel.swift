@@ -7,7 +7,7 @@
 
 import Foundation
 
-public var myMemberId : String = ""  // -1 for initial
+// public var myMemberId : String = ""  // -1 for initial
 var curUser = LoginUser()   // 전역으로 써먹는 변수.
 
 struct LoginUser {
