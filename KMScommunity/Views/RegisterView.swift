@@ -28,6 +28,8 @@ struct RegisterView: View {
     
     @State private var isShowAlert = false
     @State private var isIdDoubleChecked = false
+    
+    @State private var isNickAlert = false
     @State private var isNickDoubleChecked = false
     
     @State private var isRegistOkay = false
@@ -69,6 +71,7 @@ struct RegisterView: View {
                 .border(.secondary)
             TextField("nickname", text: $user.nickname)
                 .border(.secondary)
+                .disabled(isNickDoubleChecked)
             Button("닉네임중복확인") {
                 // 닉네임 중복 확인 완료 되면 회원가입 되게 하자. 
                 Task {
@@ -77,9 +80,17 @@ struct RegisterView: View {
                     } catch {
                         print("Not wanted Error Occur")
                     }
-                    
+                    isNickAlert.toggle()
                 }
             }
+            .alert("닉네임 중복 결과", isPresented: $isNickAlert, actions: {}, message: {
+                if isNickDoubleChecked {
+                    Text("Nick Okay")
+                } else {
+                    Text("Nick Doubled")
+                }
+            })
+            
             Button("회원가입") {
                 Task {
                     do {
@@ -96,7 +107,7 @@ struct RegisterView: View {
                     isRegistAlert = true
                 }
             }
-            .disabled(!isIdDoubleChecked)
+            .disabled(!(isIdDoubleChecked && isNickDoubleChecked))
             .alert("회원가입 결과", isPresented: $isRegistAlert) {
                 Button("확인") {
                     if isRegistOkay {
@@ -107,7 +118,7 @@ struct RegisterView: View {
                 if isRegistOkay {
                     Text("회원가입 완료")
                 } else {
-                    Text("회원가입 실패")
+                    Text("회원가입 실패, 이미 가입된 핸드폰 번호가 있습니다.")
                 }
             }
 

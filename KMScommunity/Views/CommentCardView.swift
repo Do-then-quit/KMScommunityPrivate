@@ -12,6 +12,40 @@ struct CommentModity : Codable {
     var contents: String
 }
 
+
+func postCommentLike(commentId: String) async -> Void {
+    guard let urlComponents = URLComponents(string: urlString + "/comment/like") else {
+        print("Error: cannot create URL")
+        //throw UserError.internalError
+        return
+        // 이 메소드를 사용하는 곳에서 try, catch 로 에러를 처리한다. 캬
+    }
+    let dicData = [
+        "commentId": commentId,
+        "memberId": curUser.memberId
+    ] as Dictionary<String, String>
+    
+    let jsonData : Data
+    do {
+        jsonData = try JSONSerialization.data(withJSONObject: dicData, options: [])
+        let testjson = String(data: jsonData, encoding: .utf8) ?? ""
+        print(testjson)
+    } catch {
+        return
+    }
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonData
+    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL)
+    // 사실 디버그 할때만 필요하긴 해 아래는.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+
+    
+}
+
 struct CommentCardView: View {
     @Environment(\.dismiss) var dismiss
     @State private var editButtonDisable = true
@@ -28,6 +62,27 @@ struct CommentCardView: View {
             Spacer()
             TextEditor(text: $comment.nickname)
                 .disabled(true)
+            Button {
+                comment.like.toggle()
+                if comment.like {
+                    // 임시 처리 ㅇㅇ
+                    comment.likeCount += 1
+                } else {
+                    comment.likeCount -= 1
+                }
+                Task {
+                    await postCommentLike(commentId:comment.commentId)
+                }
+                
+            } label: {
+                if comment.like {
+                    Image(systemName: "heart.fill")
+                } else {
+                    Image(systemName: "heart")
+                }
+            }
+            Text("\(comment.likeCount)")
+
             VStack {
                 Button {
                     isEditButtonClicked.toggle()
@@ -82,6 +137,6 @@ struct CommentCardView: View {
 struct CommentCardView_Previews: PreviewProvider {
     static var previews: some View {
         CommentCardView(isEdited: .constant(0), comment: Comment.sampledata)
-            .previewLayout(.fixed(width: 400, height: 90))
+            .previewLayout(.fixed(width: 450, height: 90))
     }
 }

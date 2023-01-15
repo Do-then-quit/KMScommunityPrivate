@@ -20,6 +20,39 @@ struct BoardModify: Codable {
     var category : String = "취업"
 }
 
+func postBoardLike(boardId: String) async -> Void {
+    guard let urlComponents = URLComponents(string: urlString + "/board/like") else {
+        print("Error: cannot create URL")
+        //throw UserError.internalError
+        return
+        // 이 메소드를 사용하는 곳에서 try, catch 로 에러를 처리한다. 캬
+    }
+    let dicData = [
+        "boardId": boardId,
+        "memberId": curUser.memberId
+    ] as Dictionary<String, String>
+    
+    let jsonData : Data
+    do {
+        jsonData = try JSONSerialization.data(withJSONObject: dicData, options: [])
+        let testjson = String(data: jsonData, encoding: .utf8) ?? ""
+        print(testjson)
+    } catch {
+        return
+    }
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonData
+    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL)
+    // 사실 디버그 할때만 필요하긴 해 아래는.
+    print(response)
+    print(String(bytes: data, encoding: String.Encoding.utf8))
+
+    
+}
+
 struct BoardDetailView: View {
     @Environment(\.dismiss) var dismiss
     
@@ -32,6 +65,7 @@ struct BoardDetailView: View {
     @State private var BoardContent = "asdf"
     
     @State private var commentContent = ""
+    
     
     var boardId : String
     @State var boardDetail : BoardDetail = BoardDetail(status: "asdf", message: "asdf", code: -1)
@@ -83,6 +117,24 @@ struct BoardDetailView: View {
                         Text("Delete")
                     }
                     .disabled(editButtonDisable)
+                    
+                    Spacer()
+                    Button {
+                        // board like
+                        boardDetail.data.like.toggle()
+                        Task {
+                            await postBoardLike(boardId: boardId)
+                        }
+                        
+                    } label: {
+                        if boardDetail.data.like {
+                            Image(systemName: "heart.fill")
+                        } else {
+                            Image(systemName: "heart")
+                        }
+                        
+                    }
+
 
 
                 }

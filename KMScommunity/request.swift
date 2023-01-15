@@ -129,6 +129,8 @@ struct Comment : Codable, Identifiable {
     var nickname: String
     var writeTime: String
     var memberId: String
+    var like : Bool = false
+    var likeCount : Int = -1
     
     static let sampledata :Comment = Comment(commentId: "", contents: "댓글데스", nickname: "닉네임", writeTime: "써진 시간", memberId: "")
 }

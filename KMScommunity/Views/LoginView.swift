@@ -9,14 +9,14 @@ import SwiftUI
 
 struct LoginView: View {
     @State private var user = LoginUser()
-    @State private var userId = ""
-    @State private var password = ""
     
     @State private var isLoginValid: Bool = false
     @State private var shouldShowLoginAlert: Bool = false
-    @State var memberId : String = ""
-    @State var nickname : String = ""
 
+    @State private var isAutoLogin : Bool = false
+
+    
+    
     @State private var isLoginAlertShow : Bool = false
     var body: some View {
         VStack {
@@ -25,6 +25,10 @@ struct LoginView: View {
             SecureField("Password", text: $user.userPw)
                 .border(.secondary)
             HStack {
+                Toggle(isOn: $isAutoLogin) {
+                    Text("자동 로그인")
+                }
+            
                 NavigationLink(destination: MainView(), isActive: $isLoginValid) {
                     Text("NaviLogin")
                         .onTapGesture {
@@ -32,6 +36,12 @@ struct LoginView: View {
                                 do {
                                     try await user.postUserLogin()
                                     isLoginValid = true
+                                    if isAutoLogin {
+                                        UserDefaults.standard.set(user.userId, forKey: "userId")
+                                        UserDefaults.standard.set(user.userPw, forKey: "userPw")
+                                        UserDefaults.standard.set(isAutoLogin, forKey: "isAutoLogin")
+                                    }
+                                    
                                 } catch {
                                     // error
                                     isLoginValid = false
@@ -49,6 +59,31 @@ struct LoginView: View {
             }
         }
         .padding()
+        .task {
+            print("asdf")
+            
+            let storedAutoLogin = UserDefaults.standard.bool(forKey: "isAutoLogin")
+            
+            if storedAutoLogin == true, let storedUserId = UserDefaults.standard.string(forKey: "userId"), let storedUserPw = UserDefaults.standard.string(forKey: "userPw") {
+                
+                user.userId = storedUserId
+                user.userPw = storedUserPw
+                isAutoLogin = storedAutoLogin
+                // login 시키기.
+                // navigation 하면 된다.
+                do {
+                    try await user.postUserLogin()
+                    isLoginValid = true
+                } catch {
+                    isLoginValid = false
+                    isLoginAlertShow = true
+                }
+            }
+        }
+            
+            
+            
+        
     }
 }
 

@@ -9,9 +9,9 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(\.dismiss) var dismiss
-    init() {
-        UITabBar.appearance().scrollEdgeAppearance = .init()
-    }
+//    init() {
+//        UITabBar.appearance().scrollEdgeAppearance = .init()
+//    }
     
     
     
@@ -24,6 +24,9 @@ struct MainView: View {
             VStack {
                 Text("프로필뷰")
                 Button {
+                    UserDefaults.standard.set(false, forKey: "isAutoLogin")
+                    UserDefaults.standard.set("", forKey: "userId")
+                    UserDefaults.standard.set("", forKey: "userPw")
                     dismiss()
                 } label: {
                     Text("Logout")
