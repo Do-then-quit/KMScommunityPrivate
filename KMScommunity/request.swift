@@ -89,7 +89,7 @@ struct MainBoardResponse: Codable {
     
 }
 extension MainBoardResponse {
-    static var sampleData : MainBoardResponse = MainBoardResponse(data: [], status: "status", message: "message", code: -1)
+    static var sampleData : MainBoardResponse = MainBoardResponse(data: [MainBoard()], status: "status", message: "message", code: -1)
 }
     
 enum getBoardError: Error {

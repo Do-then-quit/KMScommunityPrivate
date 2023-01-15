@@ -21,23 +21,10 @@ struct MainView: View {
                 .tabItem {
                     Text("게시판")
                 }
-            VStack {
-                Text("프로필뷰")
-                Button {
-                    UserDefaults.standard.set(false, forKey: "isAutoLogin")
-                    UserDefaults.standard.set("", forKey: "userId")
-                    UserDefaults.standard.set("", forKey: "userPw")
-                    dismiss()
-                } label: {
-                    Text("Logout")
+            ProfileView()
+                .tabItem {
+                    Text("프로필")
                 }
-
-                
-            
-            }
-            .tabItem {
-                Text("프로필")
-            }
                 
         }
         .navigationBarBackButtonHidden()
