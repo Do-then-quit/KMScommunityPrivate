@@ -9,38 +9,22 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(\.dismiss) var dismiss
-
-    var memberId: String
-    var nickname: String
-    init(memberId: String, nickname: String) {
-        UITabBar.appearance().scrollEdgeAppearance = .init()
-        self.memberId = memberId
-        self.nickname = nickname
-        myMemberId = memberId
-    }
+//    init() {
+//        UITabBar.appearance().scrollEdgeAppearance = .init()
+//    }
     
     
     
     var body: some View {
         TabView {
-            BoardView(nickname: nickname)
+            BoardView()
                 .tabItem {
                     Text("게시판")
                 }
-            VStack {
-                Text("프로필뷰")
-                Button {
-                    dismiss()
-                } label: {
-                    Text("Logout")
+            ProfileView()
+                .tabItem {
+                    Text("프로필")
                 }
-
-                
-            
-            }
-            .tabItem {
-                Text("프로필")
-            }
                 
         }
         .navigationBarBackButtonHidden()
@@ -52,6 +36,6 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView(memberId: "", nickname: "TestName")
+        MainView()
     }
 }

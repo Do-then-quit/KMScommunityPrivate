@@ -29,7 +29,7 @@ struct BoardCreateView: View {
                 HStack {
                     Button {
                         // send create request, pop
-                        let newBoardCreate = BoardCreate(title: BoardTitle, contents: BoardContent, memberId: myMemberId)
+                        let newBoardCreate = BoardCreate(title: BoardTitle, contents: BoardContent, memberId: curUser.memberId)
                         Task {
                             await postBoardCreate(boardCreate:newBoardCreate)
                             dismiss()

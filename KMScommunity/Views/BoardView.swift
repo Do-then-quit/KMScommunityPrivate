@@ -17,13 +17,12 @@ struct BoardView: View {
     }
     @State private var selectionOption = SearchOptions.제목
     @State var boardList = MainBoardResponse()
-    let nickname : String
     
     var body: some View {
         ZStack {
             VStack {
                 HStack {
-                    Text(nickname)
+                    Text(curUser.nickname)
                         .padding(.leading)
                     Spacer()
                     Picker("SearchOption", selection: $selectionOption) {
@@ -84,7 +83,7 @@ struct BoardView: View {
 struct BoardView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            BoardView(nickname: "testnick")
+            BoardView()
         }
     }
 }

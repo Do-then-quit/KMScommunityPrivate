@@ -8,56 +8,82 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var userId = ""
-    @State private var password = ""
+    @State private var user = LoginUser()
     
     @State private var isLoginValid: Bool = false
     @State private var shouldShowLoginAlert: Bool = false
-    @State var memberId : String = ""
-    @State var nickname : String = ""
 
+    @State private var isAutoLogin : Bool = false
+
+    
+    
+    @State private var isLoginAlertShow : Bool = false
     var body: some View {
         VStack {
-            TextField("UserID", text: $userId)
+            TextField("UserID", text: $user.userId)
                 .border(.secondary)
-            SecureField("Password", text: $password)
+            SecureField("Password", text: $user.userPw)
                 .border(.secondary)
             HStack {
-                
-                NavigationLink(destination: MainView(memberId: memberId, nickname: nickname), isActive: $isLoginValid) {
+                Toggle(isOn: $isAutoLogin) {
+                    Text("자동 로그인")
+                }
+            
+                NavigationLink(destination: MainView(), isActive: $isLoginValid) {
                     Text("NaviLogin")
                         .onTapGesture {
                             Task {
-                                let loginResponse = await postUserLogin(loginId:userId,loginPw:password)
-                                if loginResponse.code == 200 {
-                                    print("Login in view")
-                                    memberId = loginResponse.data.memberId
-                                    nickname = loginResponse.data.nickname
+                                do {
+                                    try await user.postUserLogin()
                                     isLoginValid = true
-                                } else {
-                                    print("Not logined in view")
+                                    if isAutoLogin {
+                                        UserDefaults.standard.set(user.userId, forKey: "userId")
+                                        UserDefaults.standard.set(user.userPw, forKey: "userPw")
+                                        UserDefaults.standard.set(isAutoLogin, forKey: "isAutoLogin")
+                                    }
+                                    
+                                } catch {
+                                    // error
                                     isLoginValid = false
+                                    isLoginAlertShow = true
                                 }
-                                
                             }
                         }
-                        
-                    
                 }
-
+                .alert("회원가입 실패", isPresented: $isLoginAlertShow, actions: {}) {
+                    Text("아이디와 비밀번호를 다시 확인해주세요.")
+                }
                 NavigationLink(destination: RegisterView()) {
                     Text("Register")
                 }
-
             }
-
         }
         .padding()
-    }
-    
-    func changeParameters(loginResponse: LoginResponse) -> Void {
-        memberId = loginResponse.data.memberId
-        nickname = loginResponse.data.nickname
+        .task {
+            print("asdf")
+            
+            let storedAutoLogin = UserDefaults.standard.bool(forKey: "isAutoLogin")
+            
+            if storedAutoLogin == true, let storedUserId = UserDefaults.standard.string(forKey: "userId"), let storedUserPw = UserDefaults.standard.string(forKey: "userPw") {
+                
+                user.userId = storedUserId
+                user.userPw = storedUserPw
+                isAutoLogin = storedAutoLogin
+                // login 시키기.
+                // navigation 하면 된다.
+                do {
+                    try await user.postUserLogin()
+                    isLoginValid = true
+                } catch {
+                    isLoginValid = false
+                    isLoginAlertShow = true
+                }
+            }
+        }
+            
+            
+            
+        
     }
 }
 

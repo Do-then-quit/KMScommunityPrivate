@@ -13,100 +13,17 @@ struct Response: Codable {
     let message: String
 }
 
+// 필요한 전역변수 라고 치자. 
 let urlString = "http://35.89.32.201:8080"
-public var myMemberId : String = ""  // -1 for initial
 
-func requestGetWithQuery(url: String,inputID: String, completionHandler: @escaping (Bool, Data) -> Void) {
-    guard var urlComponents = URLComponents(string: urlString + url) else {
-        print("Error: cannot create URL")
-        return
-    }
-    
-    let queryItem = URLQueryItem(name: "loginId", value: inputID)
-    urlComponents.queryItems = [queryItem]
-    guard let requestURL = urlComponents.url else {return}
-    print(requestURL)
-    let session = URLSession(configuration: .default)
-    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard error == nil else {
-            print("Error occur")
-            return
-        }
-        
-        guard let data = data else {
-            return
-        }
-        
-        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-            print("Not Success")
-            completionHandler(false, data)
-            return
-        }
-        
-        completionHandler(true, data)
 
-    }.resume()
-}
-
-struct RegisterResponse : Codable{
-    var status : String
-    var message : String
-    var code : Int
-    var data : String
-}
-
-// RegisterResponse(status: "OK", message: "success", code: 200, data: 9)
-func postUserRegister(userId: String, userPw: String, email: String, name: String, phone: String, nickname: String) {
-    guard let urlComponents = URLComponents(string: urlString + "/member/register") else {
-        print("Error: cannot create URL")
-        return
-    }
-    
-    let dicData = [
-        "loginId": userId,
-        "loginPw": userPw,
-        "email": email,
-        "name": name,
-        "phone": phone,
-        "nickname": nickname
-    ] as Dictionary<String, String>?
-    
-    let jsonData = try! JSONSerialization.data(withJSONObject: dicData!, options: [])
-    let testjson = String(data: jsonData, encoding: .utf8) ?? ""
-    print(testjson)
-    
-    var requestURL = URLRequest(url: urlComponents.url!)
-    requestURL.httpMethod = "POST"
-    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    requestURL.httpBody = jsonData
-    
-    let session = URLSession(configuration: .default)
-    
-    session.dataTask(with: requestURL) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard error == nil else {
-            print("Error occur: error calling POST - \(String(describing: error))")
-            return
-        }
-
-        guard let data = data, let response = response as? HTTPURLResponse, 200 == response.statusCode else {
-            print("Error: HTTP request failed")
-            print(response)
-            return
-        }
-        let decodedData = try! JSONDecoder().decode(RegisterResponse.self, from: data)
-        print(decodedData)
-
-        //print(String(decoding: data, as: UTF8.self))
-        print(response)
-    }.resume()
-}
 
 struct LoginResponse: Codable {
     var status: String
     var message: String
     var code : Int
-    var data: data
-    struct data: Codable {
+    var data: UserData
+    struct UserData: Codable {
         var memberId: String
         var nickname: String
     }
@@ -116,7 +33,7 @@ struct LoginResponse: Codable {
 func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
         print("Error: cannot create URL")
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.UserData(memberId: "", nickname: "error"))
     }
     
     let dicData = [
@@ -133,22 +50,26 @@ func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
         
-    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지. 
-    guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-        print("error")
-        print(response)
-        // 원래는 throw로 해야될듯.
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
-    }
-    
+    let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     let decoder = JSONDecoder()
     do {
         let decodedData = try decoder.decode(LoginResponse.self, from: data)
+        print(decodedData)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            print("error")
+            print(response)
+            // 원래는 throw로 해야될듯.
+            return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.UserData(memberId: "", nickname: "error"))
+        }
         return decodedData
     } catch {
         print(error)
-        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.data(memberId: "", nickname: "error"))
+        return LoginResponse(status: "error", message: "error", code: -1, data: LoginResponse.UserData(memberId: "", nickname: "error"))
     }
+    
+    
+    
+    
 }
     
 struct MainBoardResponse: Codable {
@@ -168,7 +89,7 @@ struct MainBoardResponse: Codable {
     
 }
 extension MainBoardResponse {
-    static var sampleData : MainBoardResponse = MainBoardResponse(data: [], status: "status", message: "message", code: -1)
+    static var sampleData : MainBoardResponse = MainBoardResponse(data: [MainBoard()], status: "status", message: "message", code: -1)
 }
     
 enum getBoardError: Error {
@@ -208,6 +129,8 @@ struct Comment : Codable, Identifiable {
     var nickname: String
     var writeTime: String
     var memberId: String
+    var like : Bool = false
+    var likeCount : Int = -1
     
     static let sampledata :Comment = Comment(commentId: "", contents: "댓글데스", nickname: "닉네임", writeTime: "써진 시간", memberId: "")
 }
@@ -224,6 +147,7 @@ struct BoardDetail: Codable {
         var memberId: String = ""
         var fail: Bool? = nil
         var comments: [Comment] = []
+        var like: Bool = false
     }
     var status: String
     var message: String
@@ -234,28 +158,41 @@ struct BoardDetail: Codable {
 }
 
 func getBoardDetail(boardId: String) async -> BoardDetail {
+    // 수정해야할것,
+    // post  보낼때 {"boardId" : "", "memberId", ""}
+    // response origin + like: boolean
+    print("BoardDetail Start")
     guard var urlComponents = URLComponents(string: urlString + "/board") else {
         print("Error: cannot create URL")
         return BoardDetail(status: "error", message: "error", code: -1)   // fix this line to error messsage or throw or ..
     }
     
-    let queryBoard = URLQueryItem(name: "boardId", value: String(boardId))
-    urlComponents.queryItems = [queryBoard]
+    let dicData = ["boardId": boardId, "memberId": curUser.memberId] as Dictionary<String, String>
+    let jsonData = try! JSONSerialization.data(withJSONObject: dicData)
     
-    let requestURL = URLRequest(url: urlComponents.url!) //! is okay?
+    
+    
+    var requestURL = URLRequest(url: urlComponents.url!) //! is okay?
+    requestURL.httpMethod = "POST"
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = jsonData
     do {
         let (data, response) = try! await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             print("response error?, not 200?")
+            print(String(bytes: data, encoding: String.Encoding.utf8))
+            print(response)
             return BoardDetail(status: "error", message: "error", code: -1)
         }
         print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
         let boardDetail = try JSONDecoder().decode(BoardDetail.self, from: data)
         print(boardDetail)
+        print("BoardDetail Done")
         return boardDetail
     }
     catch {
+        print("BoardDetail Done with Error")
         return BoardDetail(status: "error", message: "error", code: -1)
     }
 }
@@ -263,11 +200,12 @@ func getBoardDetail(boardId: String) async -> BoardDetail {
 struct BoardCreate : Codable {
     var title : String
     var contents : String
-    var category: String = "취업"
+    var category: String = "Initial"
     var memberId: String
 }
 
 func postBoardCreate(boardCreate: BoardCreate) async -> Void {
+    print("Now Board Create Func")
     guard var urlComponents = URLComponents(string: urlString + "/board/register") else {
         print("Error: cannot create URL")
         return    // fix this line to error messsage or throw or ..
@@ -287,6 +225,9 @@ func postBoardCreate(boardCreate: BoardCreate) async -> Void {
 //    }
     print(response)
     print(String(bytes: data, encoding: String.Encoding.utf8))
+    // Optional("{\"status\":\"OK\",\"message\":\"success\",\"code\":200,\"data\":\"fail\"}")
+    // seems like there is error in board create. 아마 보낼때 json양식이 문제가 있는게 아닐까.
+    print("Board Create Func Done")
 }
 
 func postCommentCreate(commentCreate: CommentCreate) async -> Void {
