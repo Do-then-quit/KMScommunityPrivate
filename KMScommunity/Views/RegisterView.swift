@@ -26,7 +26,7 @@ struct RegisterView: View {
 //    @State private var nickname: String = ""
 //    @State private var phone: String = ""
     
-    @State private var isShowAlert = false
+    @State private var isIdAlert = false
     @State private var isIdDoubleChecked = false
     
     @State private var isNickAlert = false
@@ -37,59 +37,61 @@ struct RegisterView: View {
     
     
     var body: some View {
-        VStack {
-            TextField("UserID", text: $user.userId)
-                .border(.secondary)
-                .disabled(isIdDoubleChecked)
-            Button("중복 확인", action: {
-                Task {
-                    do {
-                        isIdDoubleChecked = try await user.getIdDoubleCheck()
-                    } catch {
-                        print("Not wanted Error Occur")
-                    }
-                    isShowAlert.toggle()
-                    
-                }
-            })
-            .alert("id 중복 결과", isPresented: $isShowAlert, actions: {}, message: {
-                if isIdDoubleChecked {
-                    Text("Id Okay")
-                } else {
-                    Text("Id Doubled")
-                }
-            })
-            
-            
-            SecureField("Password", text: $user.userPw)
-                .border(.secondary)
-            TextField("Email", text: $user.email)
-                .border(.secondary)
-            TextField("Name", text: $user.name)
-                .border(.secondary)
-            TextField("phone", text: $user.phone)
-                .border(.secondary)
-            TextField("nickname", text: $user.nickname)
-                .border(.secondary)
-                .disabled(isNickDoubleChecked)
-            Button("닉네임중복확인") {
-                // 닉네임 중복 확인 완료 되면 회원가입 되게 하자. 
-                Task {
-                    do {
-                        isNickDoubleChecked = try await user.getIdDoubleCheck()
-                    } catch {
-                        print("Not wanted Error Occur")
-                    }
-                    isNickAlert.toggle()
+        VStack(spacing: 16.0) {
+            VStack {
+                HStack {
+                    GrayBorderTextFieldView(string: $user.userId, header: "UserID", placeholder: "Type ID")
+                        .disabled(isIdDoubleChecked)
+                    `
+                    Button("중복 확인", action: {
+                        Task {
+                            do {
+                                isIdDoubleChecked = try await user.getIdDoubleCheck()
+                            } catch {
+                                print("Not wanted Error Occur")
+                            }
+                            isIdAlert.toggle()
+                        }
+                    })
+                    .buttonStyle(.bordered)
+                    .alert("id 중복 결과", isPresented: $isIdAlert, actions: {}, message: {
+                        if isIdDoubleChecked {
+                            Text("Id Okay")
+                        } else {
+                            Text("Id Doubled")
+                        }
+                    })
                 }
             }
-            .alert("닉네임 중복 결과", isPresented: $isNickAlert, actions: {}, message: {
-                if isNickDoubleChecked {
-                    Text("Nick Okay")
-                } else {
-                    Text("Nick Doubled")
+            GrayBorderSecuredFieldView(string: $user.userPw, header: "Password", placeholder: "Type Password")
+            GrayBorderTextFieldView(string: $user.email, header: "E-Mail", placeholder: "Type E-mail")
+            GrayBorderTextFieldView(string: $user.name, header: "Name", placeholder: "Type Name")
+            GrayBorderTextFieldView(string: $user.phone, header: "Phone", placeholder: "Type Phone Number")
+            HStack {
+                GrayBorderTextFieldView(string: $user.nickname, header: "Nickname", placeholder: "Type Nickname")
+                    .disabled(isNickDoubleChecked)
+                Button("중복확인") {
+                    // 닉네임 중복 확인 완료 되면 회원가입 되게 하자.
+                    Task {
+                        do {
+                            isNickDoubleChecked = try await user.getIdDoubleCheck()
+                        } catch {
+                            print("Not wanted Error Occur")
+                        }
+                        isNickAlert.toggle()
+                    }
                 }
-            })
+                .buttonStyle(.bordered)
+                .alert("닉네임 중복 결과", isPresented: $isNickAlert, actions: {}, message: {
+                    if isNickDoubleChecked {
+                        Text("Nick Okay")
+                    } else {
+                        Text("Nick Doubled")
+                    }
+                })
+                
+            }
+            
             
             Button("회원가입") {
                 Task {
@@ -107,6 +109,7 @@ struct RegisterView: View {
                     isRegistAlert = true
                 }
             }
+            .buttonStyle(.borderedProminent)
             .disabled(!(isIdDoubleChecked && isNickDoubleChecked))
             .alert("회원가입 결과", isPresented: $isRegistAlert) {
                 Button("확인") {
@@ -121,15 +124,16 @@ struct RegisterView: View {
                     Text("회원가입 실패, 이미 가입된 핸드폰 번호가 있습니다.")
                 }
             }
-
-            
         }
         .padding()
+        .navigationTitle("Sign Up")
     }
 }
 
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView()
+        NavigationView {
+            RegisterView()
+        }
     }
 }
