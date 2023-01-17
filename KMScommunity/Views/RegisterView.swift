@@ -42,7 +42,7 @@ struct RegisterView: View {
                 HStack {
                     GrayBorderTextFieldView(string: $user.userId, header: "UserID", placeholder: "Type ID")
                         .disabled(isIdDoubleChecked)
-                    `
+                    
                     Button("중복 확인", action: {
                         Task {
                             do {
