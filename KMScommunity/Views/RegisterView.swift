@@ -49,6 +49,7 @@ struct RegisterView: View {
                                 isIdDoubleChecked = try await user.getIdDoubleCheck()
                             } catch {
                                 print("Not wanted Error Occur")
+                                fatalError(error.localizedDescription)
                             }
                             isIdAlert.toggle()
                         }
@@ -77,6 +78,7 @@ struct RegisterView: View {
                             isNickDoubleChecked = try await user.getIdDoubleCheck()
                         } catch {
                             print("Not wanted Error Occur")
+                            fatalError(error.localizedDescription)
                         }
                         isNickAlert.toggle()
                     }

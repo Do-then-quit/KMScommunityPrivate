@@ -12,6 +12,7 @@
 		1177178A29740E5B00253B55 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177178929740E5B00253B55 /* ProfileView.swift */; };
 		1177178E297689AC00253B55 /* GrayBorderTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177178D297689AC00253B55 /* GrayBorderTextFieldView.swift */; };
 		1177179029768DD900253B55 /* GrayBorderSecuredFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177178F29768DD900253B55 /* GrayBorderSecuredFieldView.swift */; };
+		1177179329791F6E00253B55 /* ToggleStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1177179229791F6E00253B55 /* ToggleStyles.swift */; };
 		11873C59295DEF1F00AF96F3 /* KMScommunityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C58295DEF1F00AF96F3 /* KMScommunityApp.swift */; };
 		11873C5B295DEF1F00AF96F3 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C5A295DEF1F00AF96F3 /* RegisterView.swift */; };
 		11873C5D295DEF2100AF96F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11873C5C295DEF2100AF96F3 /* Assets.xcassets */; };
@@ -33,6 +34,7 @@
 		1177178929740E5B00253B55 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		1177178D297689AC00253B55 /* GrayBorderTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayBorderTextFieldView.swift; sourceTree = "<group>"; };
 		1177178F29768DD900253B55 /* GrayBorderSecuredFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayBorderSecuredFieldView.swift; sourceTree = "<group>"; };
+		1177179229791F6E00253B55 /* ToggleStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleStyles.swift; sourceTree = "<group>"; };
 		11873C55295DEF1F00AF96F3 /* KMScommunity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KMScommunity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11873C58295DEF1F00AF96F3 /* KMScommunityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KMScommunityApp.swift; sourceTree = "<group>"; };
 		11873C5A295DEF1F00AF96F3 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
@@ -60,6 +62,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1177179129791F3F00253B55 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				1177179229791F6E00253B55 /* ToggleStyles.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
 		11873C4C295DEF1F00AF96F3 = {
 			isa = PBXGroup;
 			children = (
@@ -79,6 +89,7 @@
 		11873C57295DEF1F00AF96F3 /* KMScommunity */ = {
 			isa = PBXGroup;
 			children = (
+				1177179129791F3F00253B55 /* Styles */,
 				11873C82296594BE00AF96F3 /* ViewModels */,
 				11873C7F29658C2300AF96F3 /* Models */,
 				11873C762962BB0C00AF96F3 /* Views */,
@@ -218,6 +229,7 @@
 				1177179029768DD900253B55 /* GrayBorderSecuredFieldView.swift in Sources */,
 				11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */,
 				1177178A29740E5B00253B55 /* ProfileView.swift in Sources */,
+				1177179329791F6E00253B55 /* ToggleStyles.swift in Sources */,
 				11873C59295DEF1F00AF96F3 /* KMScommunityApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

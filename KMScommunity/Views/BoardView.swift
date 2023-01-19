@@ -18,6 +18,8 @@ struct BoardView: View {
     @State private var selectionOption = SearchOptions.제목
     @State var boardList = MainBoardResponse()
     
+    @State var isLoading = false
+    
     var body: some View {
         ZStack {
             VStack {
@@ -71,11 +73,16 @@ struct BoardView: View {
 
                 }
             }
+            if isLoading {
+                ProgressView()
+            }
             
         }
         .task {
+            isLoading = true
             print("boardview appeared?")
             await boardList = getBoardList()
+            isLoading = false
         }
     }
 }
