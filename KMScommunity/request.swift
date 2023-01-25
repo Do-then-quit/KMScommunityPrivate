@@ -79,14 +79,14 @@ struct MainBoardResponse: Codable {
         var likeCount: Int64 = -1
         var title: String = "asdf"
         var viewCount: Int64 = -1
-        var writeTime: String = "writeitme"
+        var writeTime: Date = Date()
         var id: String {boardId}
     }
     var data: [MainBoard] = []
     var status: String = "asdf"
     var message: String = "message"
     var code : Int = -1
-    
+    // 2023-01-25T14:20:19
 }
 extension MainBoardResponse {
     static var sampleData : MainBoardResponse = MainBoardResponse(data: [MainBoard()], status: "status", message: "message", code: -1)
@@ -112,11 +112,18 @@ func getBoardList() async -> MainBoardResponse {
         }
         print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
-        let boardList = try JSONDecoder().decode(MainBoardResponse.self, from: data)
+        // custom formatter
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY-MM-DD'T'HH:mm:ss"
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        let boardList = try decoder.decode(MainBoardResponse.self, from: data)
         //print(boardList[0])
         return boardList
     }
     catch {
+        print("Error in Get Board")
         return MainBoardResponse()
     }
 }

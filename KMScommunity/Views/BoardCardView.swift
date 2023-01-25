@@ -7,16 +7,33 @@
 
 import SwiftUI
 
+struct board {
+    var response : MainBoardResponse
+    
+}
+
 struct BoardCardView: View {
     let board : MainBoardResponse.MainBoard
     
     var body: some View {
+
         HStack {
             Text("카테")
             Divider()
             VStack {
                 Text(board.title)
-                Text(board.writeTime)
+                Text(board.writeTime.formatted(.dateTime
+                    .year()
+                    .month()
+                    .day()
+                    .hour()
+                    .minute()
+                    .second()
+                    .locale(Locale(identifier: "ko"))
+                    )
+                )
+                .font(.caption)
+                
             }
             Spacer()
             Divider()
