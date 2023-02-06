@@ -110,16 +110,16 @@ func getBoardList() async -> MainBoardResponse {
             print("response error?, not 200?")
             return MainBoardResponse()
         }
-        print(httpResponse.statusCode)
         //print(String(bytes: data, encoding: String.Encoding.utf8))
         // custom formatter
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "YYYY-MM-DD'T'HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         let boardList = try decoder.decode(MainBoardResponse.self, from: data)
         //print(boardList[0])
+        //print(boardList)
         return boardList
     }
     catch {
