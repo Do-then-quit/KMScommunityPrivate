@@ -35,6 +35,8 @@ struct RegisterView: View {
     @State private var isRegistOkay = false
     @State private var isRegistAlert = false
     
+    @State private var isEmailValid = false
+    
     
     var body: some View {
         VStack(spacing: 16.0) {
@@ -66,6 +68,11 @@ struct RegisterView: View {
             }
             GrayBorderSecuredFieldView(string: $user.userPw, header: "Password", placeholder: "Type Password")
             GrayBorderTextFieldView(string: $user.email, header: "E-Mail", placeholder: "Type E-mail")
+            if isValidEmail(testStr: user.email) {
+                Text("Valid")
+            } else {
+                Text("Invalid")
+            }
             GrayBorderTextFieldView(string: $user.name, header: "Name", placeholder: "Type Name")
             GrayBorderTextFieldView(string: $user.phone, header: "Phone", placeholder: "Type Phone Number")
             HStack {
@@ -112,7 +119,7 @@ struct RegisterView: View {
                 }
             }
             .buttonStyle(.borderedProminent)
-            .disabled(!(isIdDoubleChecked && isNickDoubleChecked))
+            .disabled(!(isIdDoubleChecked && isNickDoubleChecked && isValidEmail(testStr: user.email)))
             .alert("회원가입 결과", isPresented: $isRegistAlert) {
                 Button("확인") {
                     if isRegistOkay {
@@ -129,6 +136,12 @@ struct RegisterView: View {
         }
         .padding()
         .navigationTitle("Sign Up")
+    }
+    
+    func isValidEmail(testStr:String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluate(with: testStr)
     }
 }
 
