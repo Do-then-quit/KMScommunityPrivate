@@ -69,9 +69,15 @@ struct RegisterView: View {
             GrayBorderSecuredFieldView(string: $user.userPw, header: "Password", placeholder: "Type Password")
             GrayBorderTextFieldView(string: $user.email, header: "E-Mail", placeholder: "Type E-mail")
             if isValidEmail(testStr: user.email) {
-                Text("Valid")
+                Text("Email 유효성 검사: Valid Email")
+                    .foregroundColor(.blue)
             } else {
-                Text("Invalid")
+                if user.email != "" {
+                    Text("Email 유효성 검사: Invalid Email")
+                        .foregroundColor(.red)
+                } else {
+                    Text("Email 유효성 검사")
+                }
             }
             GrayBorderTextFieldView(string: $user.name, header: "Name", placeholder: "Type Name")
             GrayBorderTextFieldView(string: $user.phone, header: "Phone", placeholder: "Type Phone Number")
