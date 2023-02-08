@@ -26,7 +26,6 @@ func getProfile() async -> ProfileResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/profile") else {
         print("Error: cannot create URL")
         return ProfileResponse()
-        // 이 메소드를 사용하는 곳에서 try, catch 로 에러를 처리한다. 캬
     }
     
     let dicData = [
@@ -68,6 +67,7 @@ func getProfile() async -> ProfileResponse {
     print(response)
     return decodedData
 }
+
 struct ProfileView: View {
     @Environment(\.dismiss) var dismiss
 
@@ -89,11 +89,11 @@ struct ProfileView: View {
             }
             .padding()
             Divider()
-            NavigationLink(destination: Text("next")) {
+            NavigationLink(destination: MyBoardView()) {
                 Text("내가 쓴 글 수 : \(myProfile.data.boardCount)")
             }
             .padding()
-            NavigationLink(destination: Text("next")) {
+            NavigationLink(destination: MyCommentsView()) {
                 Text("내가 쓴 댓글 수 : \(myProfile.data.commentCount)")
             }
             .padding()

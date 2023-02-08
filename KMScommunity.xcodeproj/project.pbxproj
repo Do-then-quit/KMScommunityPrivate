@@ -26,6 +26,8 @@
 		11873C84296594CC00AF96F3 /* BoardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C83296594CC00AF96F3 /* BoardViewModel.swift */; };
 		11873C8629668F5600AF96F3 /* BoardCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C8529668F5600AF96F3 /* BoardCreateView.swift */; };
 		11873C882966B28700AF96F3 /* CommentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C872966B28700AF96F3 /* CommentCardView.swift */; };
+		11F030E829937C770057F95E /* MyBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030E729937C770057F95E /* MyBoardView.swift */; };
+		11F030EA299380670057F95E /* MyCommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030E9299380670057F95E /* MyCommentsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,8 @@
 		11873C83296594CC00AF96F3 /* BoardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewModel.swift; sourceTree = "<group>"; };
 		11873C8529668F5600AF96F3 /* BoardCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardCreateView.swift; sourceTree = "<group>"; };
 		11873C872966B28700AF96F3 /* CommentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCardView.swift; sourceTree = "<group>"; };
+		11F030E729937C770057F95E /* MyBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBoardView.swift; sourceTree = "<group>"; };
+		11F030E9299380670057F95E /* MyCommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCommentsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +127,8 @@
 				1177178929740E5B00253B55 /* ProfileView.swift */,
 				1177178D297689AC00253B55 /* GrayBorderTextFieldView.swift */,
 				1177178F29768DD900253B55 /* GrayBorderSecuredFieldView.swift */,
+				11F030E729937C770057F95E /* MyBoardView.swift */,
+				11F030E9299380670057F95E /* MyCommentsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -229,6 +235,8 @@
 				1177179029768DD900253B55 /* GrayBorderSecuredFieldView.swift in Sources */,
 				11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */,
 				1177178A29740E5B00253B55 /* ProfileView.swift in Sources */,
+				11F030EA299380670057F95E /* MyCommentsView.swift in Sources */,
+				11F030E829937C770057F95E /* MyBoardView.swift in Sources */,
 				1177179329791F6E00253B55 /* ToggleStyles.swift in Sources */,
 				11873C59295DEF1F00AF96F3 /* KMScommunityApp.swift in Sources */,
 			);
