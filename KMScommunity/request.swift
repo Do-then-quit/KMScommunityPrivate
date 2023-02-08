@@ -96,8 +96,8 @@ enum getBoardError: Error {
     case urlError
 }
 
-func getBoardList() async -> MainBoardResponse {
-    guard let urlComponents = URLComponents(string: urlString + "/board/list") else {
+func getBoardList(page: Int = 0) async -> MainBoardResponse {
+    guard let urlComponents = URLComponents(string: urlString + "/board/list?page=" + String(page) + "&size=10&sort=writeTime,desc") else {
         print("Error: cannot create URL")
         return MainBoardResponse()
     }
