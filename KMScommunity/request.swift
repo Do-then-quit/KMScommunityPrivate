@@ -14,8 +14,8 @@ struct Response: Codable {
 }
 
 // 필요한 전역변수 라고 치자. 
-let urlString = "http://35.89.32.201:8080"
-
+let urlString = "http://35.90.190.97:8080"
+//35.90.190.97
 
 
 struct LoginResponse: Codable {
