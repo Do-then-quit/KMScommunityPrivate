@@ -21,11 +21,15 @@ struct MainView: View {
                 .tabItem {
                     Text("게시판")
                 }
+            FriendsView()
+                .tabItem {
+                    Text("친구")
+                }
             ProfileView()
                 .tabItem {
                     Text("프로필")
                 }
-                
+            
         }
         .navigationBarBackButtonHidden()
         

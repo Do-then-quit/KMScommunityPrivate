@@ -71,31 +71,66 @@ func getFriendList(isAccept:Bool) async -> friendListResponse {
 }
 
 struct FriendsView: View {
-    //@State var waitFriendsList = friendListResponse().data
-    //@State var friendsList = friendListResponse().data
-    var friendsList = [friendListResponse.friend(memberId: "1", nickname: "abc")]
-    var waitFriendsList = [friendListResponse.friend(memberId: "2", nickname: "abcdd")]
+    @State var waitFriendsList = friendListResponse().data
+    @State var friendsList = friendListResponse().data
+    @State var nicknameTextfield : String = ""
     var body: some View {
-        
+        // 모든 버튼은 누를 때마다 데이터를 새로 고쳐야 합니다 ㅎㅎ;;
         VStack {
             List {
+                
+                HStack {
+                    TextField("친구 추가", text: $nicknameTextfield)
+                    Button("요청") {
+                        // 해야함.
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(nicknameTextfield == "")
+                }
+                        
+                
                 Section("들어온 친구신청") {
                     ForEach(waitFriendsList, id: \.memberId) { friend in
-                        Text(friend.nickname) //친구 신청 수락 거절 카드가 될것.
+                        HStack {
+                            Text(friend.nickname)
+                            Spacer()
+                            Button("수락") {
+                                //해야할.
+                            }
+                            .buttonStyle(.borderedProminent)
+                            Button("거절") {
+                                //나중에
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
                     }
                 }
                 
+                
                 Section("친구목록") {
                     ForEach(friendsList, id: \.memberId) { friend in
-                        Text(friend.nickname) // 친구 카드.
+                        HStack {
+                            Text(friend.nickname)
+                            Spacer()
+                            Menu {
+                                Button("삭제") {
+                                    // 친구 삭제. 나중에
+                                }
+                            } label: {
+                                Label("더보기", systemImage: "ellipsis.circle")
+                                    .labelStyle(.iconOnly)
+                            }
+
+                        } // 친구 카드.
+                            
                     }
                 }
                 
             }
         }
         .task {
-            //waitFriendsList = await getFriendList(isAccept: false).data
-            //friendsList = await getFriendList(isAccept: true).data
+            waitFriendsList = await getFriendList(isAccept: false).data
+            friendsList = await getFriendList(isAccept: true).data
                         
         }
     }
