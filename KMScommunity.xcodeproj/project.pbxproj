@@ -28,6 +28,7 @@
 		11873C882966B28700AF96F3 /* CommentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11873C872966B28700AF96F3 /* CommentCardView.swift */; };
 		11F030E829937C770057F95E /* MyBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030E729937C770057F95E /* MyBoardView.swift */; };
 		11F030EA299380670057F95E /* MyCommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030E9299380670057F95E /* MyCommentsView.swift */; };
+		11F030EC2996847A0057F95E /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030EB2996847A0057F95E /* FriendsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		11873C872966B28700AF96F3 /* CommentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCardView.swift; sourceTree = "<group>"; };
 		11F030E729937C770057F95E /* MyBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBoardView.swift; sourceTree = "<group>"; };
 		11F030E9299380670057F95E /* MyCommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCommentsView.swift; sourceTree = "<group>"; };
+		11F030EB2996847A0057F95E /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 				1177178F29768DD900253B55 /* GrayBorderSecuredFieldView.swift */,
 				11F030E729937C770057F95E /* MyBoardView.swift */,
 				11F030E9299380670057F95E /* MyCommentsView.swift */,
+				11F030EB2996847A0057F95E /* FriendsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				1177178E297689AC00253B55 /* GrayBorderTextFieldView.swift in Sources */,
 				11873C84296594CC00AF96F3 /* BoardViewModel.swift in Sources */,
 				1177178829703D6500253B55 /* LoginModel.swift in Sources */,
+				11F030EC2996847A0057F95E /* FriendsView.swift in Sources */,
 				1152EA74296D807C007EEA5F /* RegisterModel.swift in Sources */,
 				11873C752962BA1400AF96F3 /* MainView.swift in Sources */,
 				1177179029768DD900253B55 /* GrayBorderSecuredFieldView.swift in Sources */,
@@ -375,6 +379,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -404,6 +409,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
