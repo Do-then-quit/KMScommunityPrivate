@@ -7,86 +7,51 @@
 
 import SwiftUI
 
-struct friendListResponse: Codable {
-    var status: String = ""
-    var message: String = ""
-    var code: Int = -1
-    var data: [friend] = []
-    struct friend : Codable {
-        var memberId: String = ""
-        var nickname: String = ""
-        init(memberId: String, nickname: String) {
-            self.memberId = memberId
-            self.nickname = nickname
-        }
-    }
-}
-
-func getFriendList(isAccept:Bool) async -> friendListResponse {
-    guard let urlComponents = URLComponents(string: urlString + "/friend/list") else {
-        print("Error: cannot create URL")
-        return friendListResponse()
-    }
-    var whichListOfFriend = "ACCEPT"
-    if isAccept == false {
-        whichListOfFriend = "WAIT"
-    }
-    let dicData = [
-        "memberId": curUser.memberId,
-        "status": whichListOfFriend
-    ] as Dictionary<String, String>
-    let jsonData : Data
-    do {
-        jsonData = try JSONSerialization.data(withJSONObject: dicData, options: [])
-        let testjson = String(data: jsonData, encoding: .utf8) ?? ""
-        print(testjson)
-    } catch {
-        return friendListResponse()
-    }
-    
-    var requestURL = URLRequest(url: urlComponents.url!)
-    requestURL.httpMethod = "POST"
-    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    requestURL.httpBody = jsonData
-    
-    let (data, response) = try! await URLSession.shared.data(for: requestURL)
-
-    //see response if error
-    guard let httpresponse = response as? HTTPURLResponse, 200 == httpresponse.statusCode else {
-        print("Error: HTTP request failed")
-        print(response)
-        return friendListResponse()
-    }
-    
-    guard let decodedData = try? JSONDecoder().decode(friendListResponse.self, from: data) else {
-        return friendListResponse()
-    }
-    
-    if decodedData.code != 200 {
-        return friendListResponse()
-    }
-    print(decodedData)
-    print(response)
-    return decodedData
-}
-
 struct FriendsView: View {
     @State var waitFriendsList = friendListResponse().data
     @State var friendsList = friendListResponse().data
     @State var nicknameTextfield : String = ""
+    @State var isRequestSended: Bool? = nil
+    
     var body: some View {
         // 모든 버튼은 누를 때마다 데이터를 새로 고쳐야 합니다 ㅎㅎ;;
         VStack {
             List {
                 
-                HStack {
-                    TextField("친구 추가", text: $nicknameTextfield)
-                    Button("요청") {
-                        // 해야함.
+                Section(content: {
+                    HStack {
+                        TextField("친구 추가", text: $nicknameTextfield)
+                        Button("요청") {
+                            // 해야함.
+                            Task {
+                                if await sendFriendRequest(nickname: nicknameTextfield) {
+                                    // request success
+                                    isRequestSended = true
+                                } else {
+                                    // error
+                                    isRequestSended = false
+                                }
+                                waitFriendsList = await getFriendList(isAccept: false).data
+                                friendsList = await getFriendList(isAccept: true).data
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(nicknameTextfield == "")
+                        
                     }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(nicknameTextfield == "")
-                }
+                }, header: {
+                    Text("친구 추가")
+                }, footer: {
+                    if isRequestSended == nil {
+                        Text("친구 추가 상태")
+                    } else if isRequestSended == true {
+                        Text("전송 완료")
+                    } else {
+                        Text("전송 실패")
+                    }
+                })
+                
+                
                         
                 
                 Section("들어온 친구신청") {
@@ -96,13 +61,24 @@ struct FriendsView: View {
                             Spacer()
                             Button("수락") {
                                 //해야할.
+                                Task {
+                                    if await acceptFriend(opMemberId: friend.memberId) {
+                                        //수락 성공
+                                    } else {
+                                        //수락 실패
+                                    }
+                                    waitFriendsList = await getFriendList(isAccept: false).data
+                                    friendsList = await getFriendList(isAccept: true).data
+                                }
                             }
                             .buttonStyle(.borderedProminent)
                             Button("거절") {
                                 //나중에
                             }
                             .buttonStyle(.borderedProminent)
+                            
                         }
+                        // 친구 요청 받은건지 보낸건지 구분이 되야할듯. 내 선에서 할게 없다.
                     }
                 }
                 

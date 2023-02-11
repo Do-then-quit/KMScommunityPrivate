@@ -29,6 +29,7 @@
 		11F030E829937C770057F95E /* MyBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030E729937C770057F95E /* MyBoardView.swift */; };
 		11F030EA299380670057F95E /* MyCommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030E9299380670057F95E /* MyCommentsView.swift */; };
 		11F030EC2996847A0057F95E /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030EB2996847A0057F95E /* FriendsView.swift */; };
+		11F030EE29976D700057F95E /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030ED29976D700057F95E /* FriendModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		11F030E729937C770057F95E /* MyBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBoardView.swift; sourceTree = "<group>"; };
 		11F030E9299380670057F95E /* MyCommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCommentsView.swift; sourceTree = "<group>"; };
 		11F030EB2996847A0057F95E /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
+		11F030ED29976D700057F95E /* FriendModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 			children = (
 				1152EA73296D807C007EEA5F /* RegisterModel.swift */,
 				1177178729703D6500253B55 /* LoginModel.swift */,
+				11F030ED29976D700057F95E /* FriendModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11873C882966B28700AF96F3 /* CommentCardView.swift in Sources */,
+				11F030EE29976D700057F95E /* FriendModel.swift in Sources */,
 				11873C69295DF8A300AF96F3 /* request.swift in Sources */,
 				11873C8629668F5600AF96F3 /* BoardCreateView.swift in Sources */,
 				11873C7A2962C84200AF96F3 /* BoardCardView.swift in Sources */,
