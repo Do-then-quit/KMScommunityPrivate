@@ -112,10 +112,19 @@ struct BoardView: View {
                         }
                         
                     }
+                    
                     HStack {
                         Text("현재 페이지 : \(curPage + 1)")
                         Spacer()
                             
+                    }
+                }
+                .refreshable {
+                    Task {
+                        //isLoading = true
+                        print("boardview appeared?")
+                        await boardList = getBoardList(page: curPage)
+                        //isLoading = false
                     }
                 }
             }   // VStack

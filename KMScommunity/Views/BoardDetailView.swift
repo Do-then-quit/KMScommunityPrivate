@@ -183,7 +183,7 @@ struct BoardDetailView: View {
                                     isLoading = false
                                 }
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(PageButton(isSelected: curCommentPage == page))
                         }
                         Spacer()
                         if curCommentPage < boardDetail.totalPages - 1 {
@@ -219,6 +219,12 @@ struct BoardDetailView: View {
                     
                 }
                 .padding(.all)
+            }
+            .refreshable {
+                boardDetail = await getBoardDetail(boardId: boardId)
+                if boardDetail.data.memberId == curUser.memberId {
+                    editButtonDisable = false
+                }
             }
             if isLoading {
                 LoadingView()

@@ -105,6 +105,10 @@ struct FriendsView: View {
                     }
                     
                 }
+                .refreshable {
+                    waitFriendsList = await getFriendList(isAccept: false).data
+                    friendsList = await getFriendList(isAccept: true).data
+                }
             }
             if isLoading {
                 LoadingView()
