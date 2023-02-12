@@ -23,17 +23,18 @@ struct friendListResponse: Codable {
 }
 
 func getFriendList(isAccept:Bool) async -> friendListResponse {
-    guard let urlComponents = URLComponents(string: urlString + "/friend/list") else {
+    var whichListOfFriend = "accepted"
+    if isAccept == false {
+        whichListOfFriend = "waiting"
+    }
+    
+    guard let urlComponents = URLComponents(string: urlString + "/friend/list/" + whichListOfFriend) else {
         print("Error: cannot create URL")
         return friendListResponse()
     }
-    var whichListOfFriend = "ACCEPT"
-    if isAccept == false {
-        whichListOfFriend = "WAITING"
-    }
+    
     let dicData = [
-        "memberId": curUser.memberId,
-        "status": whichListOfFriend
+        "memberId": curUser.memberId
     ] as Dictionary<String, String>
     let jsonData : Data
     do {

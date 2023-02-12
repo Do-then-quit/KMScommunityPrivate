@@ -40,6 +40,7 @@ func getMyBoardList() async -> MainBoardResponse {
         return boardList
     }
     catch {
+        print(error)
         print("Error in Get Board")
         return MainBoardResponse()
     }

@@ -82,17 +82,35 @@ struct BoardView: View {
                             .buttonStyle(.borderedProminent)
                         }
                         Spacer()
-                        // 마지막 페이지인지는 아직 모르니까 그냥 냅두자.
-                        Button("다음") {
-                            curPage+=1
-                            Task {
-                                isLoading = true
-                                print("boardview appeared?")
-                                await boardList = getBoardList(page: curPage)
-                                isLoading = false
+                        
+                        ForEach(0..<(boardList.totalPages ?? 0), id:\.self) { page in
+                            
+                            Button("\(page+1)") {
+                                curPage = page
+                                Task {
+                                    isLoading = true
+                                    print("boardview appeared?")
+                                    await boardList = getBoardList(page: curPage)
+                                    isLoading = false
+                                }
                             }
+                            .buttonStyle(PageButton(isSelected: curPage == page))
+                            
                         }
-                        .buttonStyle(.borderedProminent)
+                        Spacer()
+                        if curPage < (boardList.totalPages ?? 0) - 1 {
+                            Button("다음") {
+                                curPage+=1
+                                Task {
+                                    isLoading = true
+                                    print("boardview appeared?")
+                                    await boardList = getBoardList(page: curPage)
+                                    isLoading = false
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        
                     }
                     HStack {
                         Text("현재 페이지 : \(curPage + 1)")

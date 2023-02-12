@@ -38,7 +38,7 @@ struct BoardCardView: View {
             Spacer()
             Divider()
             VStack {
-                Label("댓글", systemImage: "text.bubble")
+                Label("\(0)", systemImage: "text.bubble")
                 Label("\(board.likeCount)", systemImage: "heart")
                 Label("\(board.viewCount)", systemImage: "cursorarrow")
             }

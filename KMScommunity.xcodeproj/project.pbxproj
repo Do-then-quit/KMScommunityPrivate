@@ -31,6 +31,7 @@
 		11F030EC2996847A0057F95E /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030EB2996847A0057F95E /* FriendsView.swift */; };
 		11F030EE29976D700057F95E /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030ED29976D700057F95E /* FriendModel.swift */; };
 		11F030F02998C5E60057F95E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030EF2998C5E60057F95E /* LoadingView.swift */; };
+		11F030F32998F9BC0057F95E /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030F22998F9BC0057F95E /* ButtonStyles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		11F030EB2996847A0057F95E /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		11F030ED29976D700057F95E /* FriendModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendModel.swift; sourceTree = "<group>"; };
 		11F030EF2998C5E60057F95E /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		11F030F22998F9BC0057F95E /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				1177179229791F6E00253B55 /* ToggleStyles.swift */,
+				11F030F22998F9BC0057F95E /* ButtonStyles.swift */,
 			);
 			path = Styles;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 				11873C7A2962C84200AF96F3 /* BoardCardView.swift in Sources */,
 				11873C5B295DEF1F00AF96F3 /* RegisterView.swift in Sources */,
 				11873C71296199B900AF96F3 /* LoginView.swift in Sources */,
+				11F030F32998F9BC0057F95E /* ButtonStyles.swift in Sources */,
 				11873C782962BB3100AF96F3 /* BoardView.swift in Sources */,
 				1177178E297689AC00253B55 /* GrayBorderTextFieldView.swift in Sources */,
 				11873C84296594CC00AF96F3 /* BoardViewModel.swift in Sources */,

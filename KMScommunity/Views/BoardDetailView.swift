@@ -47,8 +47,8 @@ func postBoardLike(boardId: String) async -> Void {
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL)
     // 사실 디버그 할때만 필요하긴 해 아래는.
-    print(response)
-    print(String(bytes: data, encoding: String.Encoding.utf8))
+    //print(response)
+    //print(String(bytes: data, encoding: String.Encoding.utf8))
 
     
 }
@@ -71,6 +71,7 @@ struct BoardDetailView: View {
     @State var boardDetail : BoardDetail = BoardDetail(status: "asdf", message: "asdf", code: -1)
     
     @State var isLoading = true
+    @State var curCommentPage = 0
     
     var body: some View {
         ZStack {
@@ -157,6 +158,47 @@ struct BoardDetailView: View {
                         CommentCardView(isEdited: $isCommentEdited, comment: comment)
                         Divider()
                     }
+                    // 댓글 페이징 여기.
+                    HStack {
+                        if curCommentPage > 0 {
+                            Button("이전") {
+                                curCommentPage -= 1
+                                Task {
+                                    isLoading = true
+                                    print("boardview appeared?")
+                                    // 게시글 새로 불러오기 댓글페이지에 맞게
+                                    isLoading = false
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        Spacer()
+                        ForEach(0..<boardDetail.totalPages, id:\.self) { page in
+                            Button("\(page+1)") {
+                                curCommentPage = page
+                                Task {
+                                    isLoading = true
+                                    print("boardview appeared?")
+                                    // page 이동 함수.
+                                    isLoading = false
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        Spacer()
+                        if curCommentPage < boardDetail.totalPages - 1 {
+                            Button("다음") {
+                                curCommentPage+=1
+                                Task {
+                                    isLoading = true
+                                    print("boardview appeared?")
+                                    // 함수.
+                                    isLoading = false
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
                     Divider()
                     HStack {
                         TextEditor(text: $commentContent)
@@ -205,6 +247,8 @@ struct BoardDetailView: View {
 
 struct BoardDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardDetailView(boardId: "") //3 is first board
+        NavigationView {
+            BoardDetailView(boardId: "")
+        } //3 is first board
     }
 }
