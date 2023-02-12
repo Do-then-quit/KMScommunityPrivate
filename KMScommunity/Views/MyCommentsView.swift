@@ -59,31 +59,39 @@ func getMyCommentList() async -> MyCommentsResponse {
 }
 struct MyCommentsView: View {
     @State var commentList = MyCommentsResponse()
+    @State var isLoading = true
     
     var body: some View {
-        List{
-            // writeTime이 다 같으면 어카지. 구분이 흠...
-            ForEach(commentList.data, id: \.writeTime) { comment in
-                NavigationLink(destination: BoardDetailView(boardId: comment.boardId)) {
-                    VStack {
-                        Text(comment.contents)
-                        Text(comment.writeTime.formatted(.dateTime
-                            .year()
-                            .month()
-                            .day()
-                            .hour()
-                            .minute()
-                            .second()
-                            .locale(Locale(identifier: "ko"))
+        ZStack {
+            List{
+                // writeTime이 다 같으면 어카지. 구분이 흠...
+                ForEach(commentList.data, id: \.writeTime) { comment in
+                    NavigationLink(destination: BoardDetailView(boardId: comment.boardId)) {
+                        VStack {
+                            Text(comment.contents)
+                            Text(comment.writeTime.formatted(.dateTime
+                                .year()
+                                .month()
+                                .day()
+                                .hour()
+                                .minute()
+                                .second()
+                                .locale(Locale(identifier: "ko"))
+                                )
                             )
-                        )
-                        .font(.caption)
+                            .font(.caption)
+                        }
                     }
                 }
             }
+            if isLoading {
+                LoadingView()
+            }
         }
         .task {
+            isLoading = true
             commentList = await getMyCommentList()
+            isLoading = false
         }
     }
 }

@@ -50,7 +50,7 @@ struct BoardView: View {
                 }
                 List{
                     HStack {
-                        Text("현재 페이지 : \(curPage)")
+                        Text("현재 페이지 : \(curPage + 1)")
                         Spacer()
                         
                         Button("새글작성") {
@@ -95,41 +95,18 @@ struct BoardView: View {
                         .buttonStyle(.borderedProminent)
                     }
                     HStack {
-                        Text("현재 페이지 : \(curPage)")
+                        Text("현재 페이지 : \(curPage + 1)")
                         Spacer()
                             
                     }
                 }
-                
-                
-                // page 컨트롤
-                
-                
-            }
-            // 아래는 그 플로팅 +
-//            VStack {
-//                Spacer()
-//                HStack {
-//                    Spacer()
-//                    NavigationLink(destination: BoardCreateView()) {
-//                        Text("+")
-//                            .font(.system(.largeTitle))
-//                            .frame(width: 77, height: 70)
-//                            .foregroundColor(Color.white)
-//                            .padding(.bottom, 7)
-//                    }
-//                    .background(Color.blue)
-//                    .cornerRadius(38.5)
-//                    .padding()
-//                    .shadow(color: Color.black.opacity(0.3), radius: 3, x: 3, y: 3)
-//                }
-//            }
+            }   // VStack
             if isLoading {
-                ProgressView()
+                LoadingView()
             }
             
             
-        }
+        } // ZStack
         .task {
             isLoading = true
             print("boardview appeared?")

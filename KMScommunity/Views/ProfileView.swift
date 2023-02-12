@@ -72,37 +72,46 @@ struct ProfileView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var myProfile = ProfileResponse()
+    @State var isLoading = true
     var body: some View {
-        VStack {
-            HStack {
-                Text(myProfile.data.nickname)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Spacer()
-                Button("LogOut") {
-                    UserDefaults.standard.set(false, forKey: "isAutoLogin")
-                    UserDefaults.standard.set("", forKey: "userId")
-                    UserDefaults.standard.set("", forKey: "userPw")
-                    dismiss()
+        ZStack {
+            VStack {
+                HStack {
+                    Text(myProfile.data.nickname)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Spacer()
+                    Button("LogOut") {
+                        UserDefaults.standard.set(false, forKey: "isAutoLogin")
+                        UserDefaults.standard.set("", forKey: "userId")
+                        UserDefaults.standard.set("", forKey: "userPw")
+                        dismiss()
+                    }
+                        
                 }
-                    
+                .padding()
+                Divider()
+                NavigationLink(destination: MyBoardView()) {
+                    Text("내가 쓴 글 수 : \(myProfile.data.boardCount)")
+                }
+                .padding()
+                NavigationLink(destination: MyCommentsView()) {
+                    Text("내가 쓴 댓글 수 : \(myProfile.data.commentCount)")
+                }
+                .padding()
+                Text("내가 누른 하트 수 : \(myProfile.data.boardLikeCount)")
+                Spacer()
+                
             }
-            .padding()
-            Divider()
-            NavigationLink(destination: MyBoardView()) {
-                Text("내가 쓴 글 수 : \(myProfile.data.boardCount)")
+            if isLoading {
+                LoadingView()
             }
-            .padding()
-            NavigationLink(destination: MyCommentsView()) {
-                Text("내가 쓴 댓글 수 : \(myProfile.data.commentCount)")
-            }
-            .padding()
-            Text("내가 누른 하트 수 : \(myProfile.data.boardLikeCount)")
-            Spacer()
             
         }
         .task {
+            isLoading = true
             myProfile = await getProfile()
+            isLoading = false
         }
         
         

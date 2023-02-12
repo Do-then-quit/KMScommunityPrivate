@@ -46,18 +46,26 @@ func getMyBoardList() async -> MainBoardResponse {
 }
 struct MyBoardView: View {
     @State var boardList = MainBoardResponse()
+    @State var isLoading = true
 
     var body: some View {
-        List{
-            ForEach(boardList.data) { board in
-                NavigationLink(destination: BoardDetailView(boardId: board.boardId)) {
-                    BoardCardView(board: board)
-                        
+        ZStack {
+            List{
+                ForEach(boardList.data) { board in
+                    NavigationLink(destination: BoardDetailView(boardId: board.boardId)) {
+                        BoardCardView(board: board)
+                            
+                    }
                 }
+            }
+            if isLoading {
+                LoadingView()
             }
         }
         .task {
+            isLoading = true
             boardList = await getMyBoardList()
+            isLoading = false
         }
     }
         

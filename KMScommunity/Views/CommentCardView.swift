@@ -56,76 +56,75 @@ struct CommentCardView: View {
     @State var comment : Comment
     
     var body: some View {
-        HStack {
-            TextEditor(text: $comment.contents)
-                .disabled(!isEditButtonClicked)
-            Spacer()
-            TextEditor(text: $comment.nickname)
-                .disabled(true)
-            Button {
-                comment.like.toggle()
-                if comment.like {
-                    // 임시 처리 ㅇㅇ
-                    comment.likeCount += 1
-                } else {
-                    comment.likeCount -= 1
-                }
-                Task {
-                    await postCommentLike(commentId:comment.commentId)
-                }
-                
-            } label: {
-                if comment.like {
-                    Image(systemName: "heart.fill")
-                } else {
-                    Image(systemName: "heart")
-                }
-            }
-            Text("\(comment.likeCount)")
+        VStack {
+            HStack {
+                TextEditor(text: $comment.contents)
+                    .disabled(!isEditButtonClicked)
 
-            VStack {
-                Button {
-                    isEditButtonClicked.toggle()
-                    // comment edit
-                    if isEditButtonClicked == false {
-                        //update
-                        let curCommentModify = CommentModity(commentId: comment.commentId, contents: comment.contents)
-                        Task {
-                            await postCommentModify(commentModify:curCommentModify)
-                            // how to update whole view
-                            //BoardDetailView.updateDetailView()
-                            isEdited += 1
-                            
+                VStack {
+                    Text(comment.nickname)
+                    Button {
+                        isEditButtonClicked.toggle()
+                        // comment edit
+                        if isEditButtonClicked == false {
+                            //update
+                            let curCommentModify = CommentModity(commentId: comment.commentId, contents: comment.contents)
+                            Task {
+                                await postCommentModify(commentModify:curCommentModify)
+                                // how to update whole view
+                                //BoardDetailView.updateDetailView()
+                                isEdited += 1
+                                
+                            }
+                        }
+                    } label: {
+                        if isEditButtonClicked {
+                            Text("Done")
+                        } else {
+                            Text("Edit")
                         }
                     }
+                    .disabled(editButtonDisable)
                     
-                } label: {
-                    if isEditButtonClicked {
-                        Text("Done")
-                    } else {
-                        Text("Edit")
+                    Button {
+                        Task {
+                            await postCommentDelete(commentId:comment.commentId)
+                            // how to update view
+                            isEdited += 1
+                        }
+                    } label: {
+                        Text("Delete")
                     }
-                }
-                .disabled(editButtonDisable)
-                
-                Button {
-                    Task {
-                        await postCommentDelete(commentId:comment.commentId)
-                        // how to update view
-                        isEdited += 1
+                    .disabled(editButtonDisable)
+                    
+                    HStack {
+                        Button {
+                            comment.like.toggle()
+                            if comment.like {
+                                // 임시 처리 ㅇㅇ
+                                comment.likeCount += 1
+                            } else {
+                                comment.likeCount -= 1
+                            }
+                            Task {
+                                await postCommentLike(commentId:comment.commentId)
+                            }
+                            
+                        } label: {
+                            if comment.like {
+                                Image(systemName: "heart.fill")
+                            } else {
+                                Image(systemName: "heart")
+                            }
+                        }
+                        Text("\(comment.likeCount)")
                     }
-                } label: {
-                    Text("Delete")
+                    
                 }
-                .disabled(editButtonDisable)
-
-
             }
-            
+
         }
         .padding()
-        .border(.black)
-        .cornerRadius(5)
         .task {
             if curUser.memberId == comment.memberId {
                 editButtonDisable = false
@@ -137,6 +136,6 @@ struct CommentCardView: View {
 struct CommentCardView_Previews: PreviewProvider {
     static var previews: some View {
         CommentCardView(isEdited: .constant(0), comment: Comment.sampledata)
-            .previewLayout(.fixed(width: 450, height: 90))
+            .previewLayout(.fixed(width: 450, height: 120))
     }
 }

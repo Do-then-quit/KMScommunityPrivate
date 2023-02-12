@@ -70,107 +70,130 @@ struct BoardDetailView: View {
     var boardId : String
     @State var boardDetail : BoardDetail = BoardDetail(status: "asdf", message: "asdf", code: -1)
     
+    @State var isLoading = true
+    
     var body: some View {
-        ScrollView {
-            VStack {
-                HStack {
-                    TextEditor(text: $boardDetail.data.title)
+        ZStack {
+            ScrollView {
+                VStack {
+                    HStack {
+                        TextEditor(text: $boardDetail.data.title)
+                            .font(.headline)
+                            .disabled(disabledTextField)
+                            .padding(.leading)
+                        Spacer()
+                        Text(boardDetail.data.nickname)
+                            .padding(.trailing)
+                    }
+                    Divider()
+                    TextEditor(text: $boardDetail.data.contents)
                         .disabled(disabledTextField)
-                        .padding(.leading)
-                    Spacer()
-                    Text(boardDetail.data.nickname)
-                        .padding(.trailing)
-                }
-                TextEditor(text: $boardDetail.data.contents)
-                    .disabled(disabledTextField)
-                    .border(.gray)
-                    .frame(width: 300, height: 300)
-                    
-                HStack {
-                    Button {
-                        disabledTextField.toggle()
-                        if disabledTextField == true {
-                            // 보내주기.
-                            let curBoardModify = BoardModify(boardId: boardId, title: boardDetail.data.title, contents: boardDetail.data.contents)
-                            Task {
-                                await postBoardModify(boardModify:curBoardModify)
-                                boardDetail = await getBoardDetail(boardId: boardId)
+                        .border(.gray)
+                        .shadow(radius: 5)
+                        .frame(minHeight: 200)
+                        //.frame(width: 300, height: 300)
+                        
+                    HStack {
+                        Button {
+                            disabledTextField.toggle()
+                            if disabledTextField == true {
+                                // 보내주기.
+                                let curBoardModify = BoardModify(boardId: boardId, title: boardDetail.data.title, contents: boardDetail.data.contents)
+                                Task {
+                                    await postBoardModify(boardModify:curBoardModify)
+                                    boardDetail = await getBoardDetail(boardId: boardId)
+                                }
+                            }
+                            // edit 결과물 보내주기.
+                        } label: {
+                            if disabledTextField {
+                                Text("Edit")
+                            }
+                            else {
+                                Text("Done")
                             }
                         }
-                        // edit 결과물 보내주기.
-                    } label: {
-                        if disabledTextField {
-                            Text("Edit")
+                        .disabled(editButtonDisable)
+                        Button {
+                            Task {
+                                await postBoardDeletew(boardId:boardId)
+                                // navigation pop
+                                dismiss()
+                            }
+                        } label: {
+                            Text("Delete")
                         }
-                        else {
-                            Text("Done")
+                        .disabled(editButtonDisable)
+                        
+                        Spacer()
+                        Button {
+                            // board like
+                            Task {
+                                await postBoardLike(boardId: boardId)
+                                if boardDetail.data.like {
+                                    boardDetail.data.likeCount += 1
+                                } else {
+                                    boardDetail.data.likeCount -= 1
+                                }
+                            }
+                            boardDetail.data.like.toggle()
+
+                            
+                        } label: {
+                            if boardDetail.data.like {
+                                Image(systemName: "heart.fill")
+                            } else {
+                                Image(systemName: "heart")
+                            }
+                            
                         }
+                        Text("\(boardDetail.data.likeCount)")
+
+
+
                     }
-                    .disabled(editButtonDisable)
-                    Button {
-                        Task {
-                            await postBoardDeletew(boardId:boardId)
-                            // navigation pop
-                            dismiss()
-                        }
-                    } label: {
-                        Text("Delete")
+                    Divider()
+                    ForEach(boardDetail.data.comments) { comment in
+                        CommentCardView(isEdited: $isCommentEdited, comment: comment)
+                        Divider()
                     }
-                    .disabled(editButtonDisable)
+                    Divider()
+                    HStack {
+                        TextEditor(text: $commentContent)
+                            .border(.blue)
+                        Button {
+                            // Task
+                            let curCommentCreate = CommentCreate(contents: commentContent, boardId: boardId, memberId: curUser.memberId)
+                            Task {
+                                await postCommentCreate(commentCreate:curCommentCreate)
+                                boardDetail = await getBoardDetail(boardId: boardId)
+                                commentContent = ""
+                            }
+                        } label: {
+                            Text("댓글 작성")
+                        }
+
+                    }
                     
-                    Spacer()
-                    Button {
-                        // board like
-                        boardDetail.data.like.toggle()
-                        Task {
-                            await postBoardLike(boardId: boardId)
-                        }
-                        
-                    } label: {
-                        if boardDetail.data.like {
-                            Image(systemName: "heart.fill")
-                        } else {
-                            Image(systemName: "heart")
-                        }
-                        
-                    }
-
-
-
                 }
-                Divider()
-                ForEach(boardDetail.data.comments) { comment in
-                    CommentCardView(isEdited: $isCommentEdited, comment: comment)
-                }
-                Divider()
-                HStack {
-                    TextEditor(text: $commentContent)
-                        .border(.blue)
-                    Button {
-                        // Task
-                        let curCommentCreate = CommentCreate(contents: commentContent, boardId: boardId, memberId: curUser.memberId)
-                        Task {
-                            await postCommentCreate(commentCreate:curCommentCreate)
-                            boardDetail = await getBoardDetail(boardId: boardId)
-                            commentContent = ""
-                        }
-                    } label: {
-                        Text("댓글 작성")
-                    }
-
-                }
-                
+                .padding(.all)
             }
-            .padding(.all)
+            if isLoading {
+                LoadingView()
+            }
         }
         .task {
+            isLoading = true
             boardDetail = await getBoardDetail(boardId: boardId)
             if boardDetail.data.memberId == curUser.memberId {
                 editButtonDisable = false
             }
+            isLoading = false
         }
         .task(id: isCommentEdited) {
+            isLoading = true
             boardDetail = await getBoardDetail(boardId: boardId)
+            isLoading = false
         }
     }
     
