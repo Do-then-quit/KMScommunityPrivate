@@ -30,6 +30,7 @@ struct LoginResponse: Codable {
     
 }
 
+// 이 함수는 이제 안씀. 추후 삭제
 func postUserLogin(loginId : String, loginPw : String) async -> LoginResponse {
     guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
         print("Error: cannot create URL")
@@ -194,6 +195,8 @@ func getBoardDetail(boardId: String, page: Int = 0) async -> BoardDetail {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     do {
         let (data, response) = try await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
@@ -235,6 +238,8 @@ func postBoardCreate(boardCreate: BoardCreate) async -> Void {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonBoardCreate
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
 //    guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
@@ -259,6 +264,8 @@ func postCommentCreate(commentCreate: CommentCreate) async -> Void {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonCommentCreate
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     print(response)
@@ -276,6 +283,8 @@ func postBoardModify(boardModify: BoardModify) async -> Void {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonBoardModify
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     print(response)
@@ -287,11 +296,13 @@ func postBoardDeletew(boardId: String) async -> Void {
         print("Error: cannot create URL")
         return    // fix this line to error messsage or throw or ..
     }
-    let formDataString = "boardId=\(boardId)"
     var requestURL = URLRequest(url: urlComponents.url!)
     requestURL.httpMethod = "POST"
-    requestURL.httpBody = formDataString.data(using: .utf8)
-    requestURL.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    requestURL.httpBody = boardId.data(using: .utf8)
+    requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
+    
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     print(response)
     print(String(bytes: data, encoding: String.Encoding.utf8))
@@ -307,6 +318,8 @@ func postCommentDelete(commentId: String) async -> Void {
     requestURL.httpMethod = "POST"
     requestURL.httpBody = formDataString.data(using: .utf8)
     requestURL.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     print(response)
     print(String(bytes: data, encoding: String.Encoding.utf8))
@@ -322,6 +335,8 @@ func postCommentModify(commentModify: CommentModity) async -> Void {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonCommentModify
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL) // error 어케하지.
     print(response)

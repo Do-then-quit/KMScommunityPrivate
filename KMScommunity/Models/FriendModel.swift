@@ -49,6 +49,8 @@ func getFriendList(isAccept:Bool) async -> friendListResponse {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL)
 
@@ -100,6 +102,8 @@ func sendFriendRequest(nickname: String) async -> Bool {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL)
 
@@ -145,6 +149,8 @@ func acceptFriend(opMemberId: String) async -> Bool {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL)
 

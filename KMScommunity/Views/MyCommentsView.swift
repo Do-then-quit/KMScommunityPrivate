@@ -34,6 +34,8 @@ func getMyCommentList() async -> MyCommentsResponse {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     do {
         let (data, response) = try! await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {

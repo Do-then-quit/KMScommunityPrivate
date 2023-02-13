@@ -37,6 +37,8 @@ func postCommentLike(commentId: String) async -> Void {
     requestURL.httpMethod = "POST"
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     let (data, response) = try! await URLSession.shared.data(for: requestURL)
     // 사실 디버그 할때만 필요하긴 해 아래는.
