@@ -70,7 +70,7 @@ struct BoardView: View {
                     
                     HStack {
                         if curPage > 0 {
-                            Button("이전") {
+                            Button("<") {
                                 curPage -= 1
                                 Task {
                                     isLoading = true
@@ -83,8 +83,8 @@ struct BoardView: View {
                         }
                         Spacer()
                         
+                        // 나중에 페이지 수가 많으면 어캄.
                         ForEach(0..<(boardList.totalPages ?? 0), id:\.self) { page in
-                            
                             Button("\(page+1)") {
                                 curPage = page
                                 Task {
@@ -99,7 +99,7 @@ struct BoardView: View {
                         }
                         Spacer()
                         if curPage < (boardList.totalPages ?? 0) - 1 {
-                            Button("다음") {
+                            Button(">") {
                                 curPage+=1
                                 Task {
                                     isLoading = true

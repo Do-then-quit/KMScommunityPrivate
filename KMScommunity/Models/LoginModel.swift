@@ -25,6 +25,7 @@ struct LoginUser {
         struct UserData: Codable {
             var memberId: String
             var nickname: String
+            var jwtToken: String
         }
         
     }
@@ -33,7 +34,7 @@ struct LoginUser {
     var userId: String = ""
     var userPw: String = ""
     var nickname: String = ""
-    
+    var jwtToken: String = ""
     func postUserLogin() async throws -> Void {
         guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
             print("Error: cannot create URL")
@@ -81,6 +82,7 @@ struct LoginUser {
         curUser.nickname = decodedData.data.nickname
         curUser.userId = userId
         curUser.userPw = userPw
+        curUser.jwtToken = decodedData.data.jwtToken
     }
 }
 

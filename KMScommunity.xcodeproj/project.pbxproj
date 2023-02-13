@@ -32,6 +32,7 @@
 		11F030EE29976D700057F95E /* FriendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030ED29976D700057F95E /* FriendModel.swift */; };
 		11F030F02998C5E60057F95E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030EF2998C5E60057F95E /* LoadingView.swift */; };
 		11F030F32998F9BC0057F95E /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030F22998F9BC0057F95E /* ButtonStyles.swift */; };
+		11F030F5299908540057F95E /* TextEditorStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F030F4299908540057F95E /* TextEditorStyles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +62,7 @@
 		11F030ED29976D700057F95E /* FriendModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendModel.swift; sourceTree = "<group>"; };
 		11F030EF2998C5E60057F95E /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		11F030F22998F9BC0057F95E /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
+		11F030F4299908540057F95E /* TextEditorStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorStyles.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				1177179229791F6E00253B55 /* ToggleStyles.swift */,
 				11F030F22998F9BC0057F95E /* ButtonStyles.swift */,
+				11F030F4299908540057F95E /* TextEditorStyles.swift */,
 			);
 			path = Styles;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 				1152EA74296D807C007EEA5F /* RegisterModel.swift in Sources */,
 				11873C752962BA1400AF96F3 /* MainView.swift in Sources */,
 				1177179029768DD900253B55 /* GrayBorderSecuredFieldView.swift in Sources */,
+				11F030F5299908540057F95E /* TextEditorStyles.swift in Sources */,
 				11873C7C2962E6DA00AF96F3 /* BoardDetailView.swift in Sources */,
 				1177178A29740E5B00253B55 /* ProfileView.swift in Sources */,
 				11F030EA299380670057F95E /* MyCommentsView.swift in Sources */,

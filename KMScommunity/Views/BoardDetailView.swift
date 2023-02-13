@@ -166,6 +166,8 @@ struct BoardDetailView: View {
                                 Task {
                                     isLoading = true
                                     print("boardview appeared?")
+                                    boardDetail = await getBoardDetail(boardId: boardId, page: curCommentPage)
+
                                     // 게시글 새로 불러오기 댓글페이지에 맞게
                                     isLoading = false
                                 }
@@ -180,6 +182,8 @@ struct BoardDetailView: View {
                                     isLoading = true
                                     print("boardview appeared?")
                                     // page 이동 함수.
+                                    boardDetail = await getBoardDetail(boardId: boardId, page: curCommentPage)
+
                                     isLoading = false
                                 }
                             }
@@ -193,6 +197,8 @@ struct BoardDetailView: View {
                                     isLoading = true
                                     print("boardview appeared?")
                                     // 함수.
+                                    boardDetail = await getBoardDetail(boardId: boardId, page: curCommentPage)
+
                                     isLoading = false
                                 }
                             }

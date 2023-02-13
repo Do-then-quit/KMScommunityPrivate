@@ -27,7 +27,7 @@ struct PageButton: ButtonStyle {
                 .background(Color.white)
                 .foregroundColor(.blue)
                 .clipShape(Rectangle())
-                //.border(.black)
+                .border(.black)
                 .cornerRadius(5)
         }
         

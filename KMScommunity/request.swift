@@ -104,14 +104,19 @@ func getBoardList(page: Int = 0) async -> MainBoardResponse {
         print("Error: cannot create URL")
         return MainBoardResponse()
     }
+    print("-----boardList-----")
+    print(urlComponents.string)
+    print(page)
     
-    let requestURL = URLRequest(url: urlComponents.url!)
+    var requestURL = URLRequest(url: urlComponents.url!)
+    requestURL.setValue(curUser.jwtToken, forHTTPHeaderField: "token")
+    requestURL.setValue(curUser.memberId, forHTTPHeaderField: "memberId")
     
     do {
         // 아래 try 가 항상 성공한다는 보장이 없다.
         // 짧은 시간에 많은 요청을 보내면 cancelled되어 에러가 발생하는 경우도...
         // 그럴때는 받아서 잠시 후에 다시 보내는 식으로 하는게 좋을 것 같은데 좀 귀찮네...
-        let (data, response) = try! await URLSession.shared.data(for: requestURL)
+        let (data, response) = try await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             print("response error?, not 200?")
             return MainBoardResponse()
@@ -125,7 +130,7 @@ func getBoardList(page: Int = 0) async -> MainBoardResponse {
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         let boardList = try decoder.decode(MainBoardResponse.self, from: data)
         //print(boardList[0])
-        print(boardList)
+        //print(boardList)
         return boardList
     }
     catch {
@@ -173,12 +178,9 @@ struct BoardDetail: Codable {
 }
 
 func getBoardDetail(boardId: String, page: Int = 0) async -> BoardDetail {
-    // 수정해야할것,
-    // post  보낼때 {"boardId" : "", "memberId", ""}
-    // response origin + like: boolean
     print("BoardDetail Start")
-    //board?pageNumber=0&pageSize=10
-    guard var urlComponents = URLComponents(string: urlString + "/board?" + "pageNumber=\(page)&pageSize=10") else {
+    // jwtToken 추가 필요.
+    guard var urlComponents = URLComponents(string: urlString + "/board?" + "page=\(page)") else {
         print("Error: cannot create URL")
         return BoardDetail(status: "error", message: "error", code: -1)   // fix this line to error messsage or throw or ..
     }
@@ -193,7 +195,7 @@ func getBoardDetail(boardId: String, page: Int = 0) async -> BoardDetail {
     requestURL.addValue("application/json", forHTTPHeaderField: "Content-Type")
     requestURL.httpBody = jsonData
     do {
-        let (data, response) = try! await URLSession.shared.data(for: requestURL)
+        let (data, response) = try await URLSession.shared.data(for: requestURL)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             print("response error?, not 200?")
             print(String(bytes: data, encoding: String.Encoding.utf8))
@@ -208,6 +210,7 @@ func getBoardDetail(boardId: String, page: Int = 0) async -> BoardDetail {
         return boardDetail
     }
     catch {
+        // 보드 디테일 들어갔다가 나올때 특히 밀어서 팝할때 문제가 생기네. 나중에 생각하고.
         print("BoardDetail Done with Error")
         return BoardDetail(status: "error", message: "error", code: -1)
     }
