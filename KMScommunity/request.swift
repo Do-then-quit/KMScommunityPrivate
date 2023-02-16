@@ -100,10 +100,13 @@ enum getBoardError: Error {
     case urlError
 }
 
-func getBoardList(page: Int = 0) async -> MainBoardResponse {
-    guard let urlComponents = URLComponents(string: urlString + "/board/list?page=" + String(page) + "&size=10&sort=writeTime,desc") else {
+func getBoardList(page: Int = 0, searchOption: BoardView.SearchOptions = .제목, searchText : String = "") async -> MainBoardResponse {
+    guard var urlComponents = URLComponents(string: urlString + "/board/list?page=" + String(page) + "&size=10&sort=writeTime,desc") else {
         print("Error: cannot create URL")
         return MainBoardResponse()
+    }
+    if searchText != "" {
+        urlComponents.queryItems?.append(URLQueryItem(name: searchOption.rawValue, value: searchText))
     }
     print("-----boardList-----")
     print(urlComponents.string)
