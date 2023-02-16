@@ -13,12 +13,12 @@ struct BoardView: View {
     
     enum SearchOptions: String, CaseIterable, Identifiable {
         case 제목 = "title"
-        case 내용 = "content"
+        case 내용 = "contents"
         case 닉네임 = "nickname"
         var id: Self {self}
     }
     @State private var selectionOption = SearchOptions.제목
-    @State var boardList = MainBoardResponse()
+    @State private var boardList = MainBoardResponse()
     
     @State var isLoading = false
     
@@ -38,6 +38,7 @@ struct BoardView: View {
                         .padding(.leading)
                     HStack {
                         
+                        // todo: 한글로 보이게 나중에 하자. 
                         Picker("", selection: $selectionOption) {
                             ForEach(SearchOptions.allCases) {
                                 Text($0.rawValue)
