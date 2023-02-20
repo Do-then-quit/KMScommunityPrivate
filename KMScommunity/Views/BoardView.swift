@@ -50,7 +50,7 @@ struct BoardView: View {
                         Button {
                             Task {
                                 isLoading = true
-                                // 이제 getBoardList 에는 searchOption, searchText들어가자.
+                                curPage = 0
                                 await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)
                                 isLoading = false
                             }
@@ -84,9 +84,7 @@ struct BoardView: View {
                                 curPage -= 1
                                 Task {
                                     isLoading = true
-                                    print("boardview appeared?")
-                                    // todo : 이제 getBoardList 에는 searchOption, searchText들어가자.
-                                    await boardList = getBoardList(page: curPage)
+                                    await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)
                                     isLoading = false
                                 }
                             }
@@ -100,9 +98,7 @@ struct BoardView: View {
                                 curPage = page
                                 Task {
                                     isLoading = true
-                                    print("boardview appeared?")
-                                    // todo : 검색 기능 추가
-                                    await boardList = getBoardList(page: curPage)
+                                    await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)
                                     isLoading = false
                                 }
                             }
@@ -115,9 +111,7 @@ struct BoardView: View {
                                 curPage+=1
                                 Task {
                                     isLoading = true
-                                    print("boardview appeared?")
-                                    //todo : 검색 기능 추가.
-                                    await boardList = getBoardList(page: curPage)
+                                    await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)
                                     isLoading = false
                                 }
                             }
@@ -137,7 +131,10 @@ struct BoardView: View {
                         //isLoading = true
                         print("boardview appeared?")
                         // 리프레시는 그냥 하지 말까 너무 안이쁘다
-                        await boardList = getBoardList(page: curPage)
+                        //우선 리프레시 하면 초기화 느낌으로 가자.
+                        selectionOption = .제목
+                        searchText = ""
+                        await boardList = getBoardList(page: 0)
                         //isLoading = false
                     }
                 }
@@ -152,9 +149,7 @@ struct BoardView: View {
             isLoading = true
             print("boardview appeared?")
             //todo : 추후에는 이전에 검색했던 곳 기록남아있는걸로 재검색 하게 하자.
-            searchText = ""
-            selectionOption = .제목
-            await boardList = getBoardList(page: curPage)
+            await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)
             isLoading = false
         }
     }
