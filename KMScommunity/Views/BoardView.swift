@@ -12,12 +12,13 @@ struct BoardView: View {
     @State private var searchText: String = ""
     
     enum SearchOptions: String, CaseIterable, Identifiable {
-        case 제목 = "title"
-        case 내용 = "contents"
-        case 닉네임 = "nickname"
+        case 제목
+        case 내용
+        case 닉네임
         var id: Self {self}
     }
     @State private var selectionOption = SearchOptions.제목
+    @State private var categoryOption = "전체"
     @State private var boardList = MainBoardResponse()
     
     @State var isLoading = false
@@ -34,8 +35,13 @@ struct BoardView: View {
                     //Empty view
                 }
                 List{
-                    Text(curUser.nickname)
-                        .padding(.leading)
+                    // category
+                    Picker("카테고리", selection: $categoryOption) {
+                        ForEach(curUser.categorys, id: \.self) { item in
+                            Text(item)
+                        }
+                    }
+                    
                     HStack {
                         
                         // todo: 한글로 보이게 나중에 하자. 
@@ -44,8 +50,9 @@ struct BoardView: View {
                                 Text($0.rawValue)
                             }
                         }
+                        
+                        
                         TextField("", text: $searchText)
-                            .frame(width: 200)
                             .textFieldStyle(.roundedBorder)
                         Button {
                             Task {
@@ -134,6 +141,7 @@ struct BoardView: View {
                         //우선 리프레시 하면 초기화 느낌으로 가자.
                         selectionOption = .제목
                         searchText = ""
+                        categoryOption = "전체"
                         await boardList = getBoardList(page: 0)
                         //isLoading = false
                     }
@@ -147,6 +155,7 @@ struct BoardView: View {
         } // ZStack
         .task {
             isLoading = true
+           
             print("boardview appeared?")
             //todo : 추후에는 이전에 검색했던 곳 기록남아있는걸로 재검색 하게 하자.
             await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)

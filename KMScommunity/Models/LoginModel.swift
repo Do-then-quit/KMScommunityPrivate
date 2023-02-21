@@ -26,6 +26,7 @@ struct LoginUser {
             var memberId: String
             var nickname: String
             var jwtToken: String
+            var category: [String]
         }
         
     }
@@ -35,6 +36,7 @@ struct LoginUser {
     var userPw: String = ""
     var nickname: String = ""
     var jwtToken: String = ""
+    var categorys: [String] = ["전체"]
     func postUserLogin() async throws -> Void {
         guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
             print("Error: cannot create URL")
@@ -83,6 +85,7 @@ struct LoginUser {
         curUser.userId = userId
         curUser.userPw = userPw
         curUser.jwtToken = decodedData.data.jwtToken
+        curUser.categorys.append(contentsOf: decodedData.data.category)
     }
 }
 

@@ -106,7 +106,15 @@ func getBoardList(page: Int = 0, searchOption: BoardView.SearchOptions = .제목
         return MainBoardResponse()
     }
     if searchText != "" {
-        urlComponents.queryItems?.append(URLQueryItem(name: searchOption.rawValue, value: searchText))
+        var searchOptionString = ""
+        if searchOption == .제목 {
+            searchOptionString = "title"
+        } else if searchOption == .내용 {
+            searchOptionString = "contents"
+        } else if searchOption == .닉네임 {
+            searchOptionString = "nickname"
+        }
+        urlComponents.queryItems?.append(URLQueryItem(name: searchOptionString, value: searchText))
     }
     print("-----boardList-----")
     print(urlComponents.string)
