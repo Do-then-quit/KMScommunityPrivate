@@ -81,6 +81,7 @@ struct MainBoardResponse: Codable {
         var title: String = "asdf"
         var viewCount: Int64 = -1
         var writeTime: Date = Date()
+        var category: String = "잡담"
         var id: String {boardId}
     }
     var data: [MainBoard] = []
@@ -105,6 +106,7 @@ func getBoardList(page: Int = 0, searchOption: BoardView.SearchOptions = .제목
         print("Error: cannot create URL")
         return MainBoardResponse()
     }
+    //이런 방식으로 카테고리도 처리하면 될듯 하다.
     if searchText != "" {
         var searchOptionString = ""
         if searchOption == .제목 {

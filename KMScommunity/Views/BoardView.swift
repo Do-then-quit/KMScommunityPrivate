@@ -26,6 +26,9 @@ struct BoardView: View {
     @State var curPage = 0
     @State var isAddButtonSelect :Int? = nil
     
+    var categorys:[String] = ["전체"] + curUser.categorys
+    
+    
     var body: some View {
         ZStack {
             VStack {
@@ -37,7 +40,7 @@ struct BoardView: View {
                 List{
                     // category
                     Picker("카테고리", selection: $categoryOption) {
-                        ForEach(curUser.categorys, id: \.self) { item in
+                        ForEach(categorys, id: \.self) { item in
                             Text(item)
                         }
                     }
@@ -159,7 +162,6 @@ struct BoardView: View {
         } // ZStack
         .task {
             isLoading = true
-           
             print("boardview appeared?")
             //todo : 추후에는 이전에 검색했던 곳 기록남아있는걸로 재검색 하게 하자.
             await boardList = getBoardList(page: curPage, searchOption: selectionOption, searchText: searchText)

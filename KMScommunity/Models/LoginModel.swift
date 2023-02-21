@@ -36,7 +36,7 @@ struct LoginUser {
     var userPw: String = ""
     var nickname: String = ""
     var jwtToken: String = ""
-    var categorys: [String] = ["전체"]
+    var categorys: [String] = []
     func postUserLogin() async throws -> Void {
         guard let urlComponents = URLComponents(string: urlString + "/member/login") else {
             print("Error: cannot create URL")

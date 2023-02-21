@@ -11,11 +11,16 @@ struct BoardCreateView: View {
     @Environment(\.dismiss) var dismiss
     @State private var BoardContent = ""
     @State private var BoardTitle = ""
-    
+    @State private var categoryOption = "잡담"
     
     var body: some View {
         ScrollView {
             VStack {
+                Picker("카테고리", selection: $categoryOption) {
+                    ForEach(curUser.categorys, id: \.self) { category in
+                        Text(category)
+                    }
+                }
                 HStack {
                     TextEditor(text: $BoardTitle)
                         .border(.gray)
@@ -29,7 +34,7 @@ struct BoardCreateView: View {
                 HStack {
                     Button {
                         // send create request, pop
-                        let newBoardCreate = BoardCreate(title: BoardTitle, contents: BoardContent, memberId: curUser.memberId)
+                        let newBoardCreate = BoardCreate(title: BoardTitle, contents: BoardContent, category: categoryOption, memberId: curUser.memberId)
                         Task {
                             await postBoardCreate(boardCreate:newBoardCreate)
                             dismiss()

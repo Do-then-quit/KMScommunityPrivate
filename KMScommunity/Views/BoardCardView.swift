@@ -18,7 +18,8 @@ struct BoardCardView: View {
     var body: some View {
 
         HStack {
-            Text("카테")
+            Text(board.category)
+                .font(.caption2)
             Divider()
             VStack {
                 Text(board.title)
