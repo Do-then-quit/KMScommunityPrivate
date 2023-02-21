@@ -41,6 +41,10 @@ struct BoardView: View {
                             Text(item)
                         }
                     }
+                    .onChange(of: categoryOption) { newValue in
+                        print(newValue)
+                        //여기서 카테고리 검색 불러오면 되겠다~!
+                    }
                     
                     HStack {
                         
