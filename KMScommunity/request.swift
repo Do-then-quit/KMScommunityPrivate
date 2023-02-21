@@ -81,7 +81,7 @@ struct MainBoardResponse: Codable {
         var title: String = "asdf"
         var viewCount: Int64 = -1
         var writeTime: Date = Date()
-        var category: String = "잡담"
+        var category: String? = "잡담"
         var id: String {boardId}
     }
     var data: [MainBoard] = []

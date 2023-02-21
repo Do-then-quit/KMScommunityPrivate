@@ -18,7 +18,7 @@ struct BoardCardView: View {
     var body: some View {
 
         HStack {
-            Text(board.category)
+            Text(board.category ?? "잡담")
                 .font(.caption2)
             Divider()
             VStack {
